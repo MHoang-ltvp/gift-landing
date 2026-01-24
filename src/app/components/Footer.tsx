@@ -65,7 +65,13 @@ export default function Footer() {
     );
 
     // Build social links from settings
-    const socialLinks = settings
+    type SocialLink = {
+        name: string;
+        icon: React.ReactNode;
+        url: string;
+    };
+
+    const socialLinks: SocialLink[] = settings
         ? [
               settings.instagram?.enabled && {
                   name: "Instagram",
@@ -111,7 +117,7 @@ export default function Footer() {
                   ),
                   url: settings.tiktok.url || "#",
               },
-          ].filter(Boolean)
+          ].filter((item): item is SocialLink => Boolean(item))
         : [];
 
     return (
