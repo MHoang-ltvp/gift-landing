@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="vi" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Shop - Quà Tặng Yêu Thương</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .slide-down {
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .product-carousel {
+            scroll-behavior: smooth;
+            overflow: hidden;
+        }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex: 0 0 calc(25% - 1rem);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+
+        @media (max-width: 1280px) {
+            .product-card {
+                flex: 0 0 calc(33.333% - 1rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                flex: 0 0 calc(50% - 1rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-card {
+                flex: 0 0 calc(100% - 1rem);
+            }
+        }
+
+        .arrow-btn {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+
+        .arrow-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 32px rgba(220, 38, 38, 0.5);
+        }
+
+        .arrow-btn:active {
+            transform: scale(0.95);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+
+<body class="h-full w-full font-body bg-white overflow-auto">
+    <div id="main-container" class="h-full w-full"><!-- Header -->
+        <header class="sticky top-0 z-50 bg-white shadow-md slide-down">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex flex-col items-start gap-0.5">
+                        <div class="flex items-center gap-2"><span class="text-3xl">🎁</span> <span id="site-title"
+                                class="font-display text-2xl font-bold gradient-text">Gift Shop</span>
+                        </div>
+                        <p class="text-xs text-gray-600 font-light italic">Quà lớn cho Tết – Quà nhỏ cho yêu thương</p>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-8"><a href="#tet"
+                            class="text-gray-700 hover:text-red-600 transition-colors font-medium">Quà Tết</a> <a
+                            href="#valentine"
+                            class="text-gray-700 hover:text-red-600 transition-colors font-medium">Valentine</a> <a
+                            href="#women" class="text-gray-700 hover:text-red-600 transition-colors font-medium">8/3</a>
+                        <a href="#contact" class="text-gray-700 hover:text-red-600 transition-colors font-medium">Liên
+                            Hệ</a>
+                    </nav>
+                </div>
+            </div>
+        </header><!-- Hero Section - Split Layout -->
+        <section class="w-full bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-20 gap-6" style="height: 400px;">
+                    <!-- LEFT BANNER - Main (65%) -->
+                    <div class="lg:col-span-13 bg-gradient-to-br from-red-500 via-rose-500 to-pink-400 rounded-2xl overflow-hidden shadow-2xl slide-up relative"
+                        style="animation-delay: 0.1s;">
+                        <div class="absolute inset-0 opacity-20">
+                            <svg viewbox="0 0 400 300" class="w-full h-full">
+                                <defs>
+                                    <pattern id="dots" x="40" y="40" width="80" height="80"
+                                        patternunits="userSpaceOnUse">
+                                        <circle cx="10" cy="10" r="3" fill="#fff" opacity="0.3" />
+                                    </pattern>
+                                </defs>
+                                <rect width="400" height="300" fill="url(#dots)" />
+                            </svg>
+                        </div>
+                        <div class="relative h-full flex items-center justify-between px-12"><!-- Left Text Content -->
+                            <div class="z-10 w-1/2">
+                                <h1 id="hero-title"
+                                    class="font-display text-5xl font-bold text-white mb-4 leading-tight slide-up"
+                                    style="animation-delay: 0.2s;">Gửi T��nh Cảm, Gửi Tình Yêu</h1>
+                                <p class="text-white text-lg mb-8 leading-relaxed opacity-95 slide-up"
+                                    style="animation-delay: 0.3s;">Những bộ sưu tập quà tặng được ch��n lọc tỉ mỉ cho
+                                    mỗi dịp đặc biệt</p><button
+                                    class="bg-white text-red-600 font-bold py-3 px-8 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 slide-up"
+                                    style="animation-delay: 0.4s;"> Khám Phá Ngay → </button>
+                            </div><!-- Right Illustration -->
+                            <div class="w-1/2 relative h-full flex items-center justify-end pr-8 slide-up float-animation"
+                                style="animation-delay: 0.3s;">
+                                <svg viewbox="0 0 300 300"
+                                    class="w-4/5 h-4/5 drop-shadow-2xl"><!-- Main Large Gift Box -->
+                                    <rect x="40" y="80" width="140" height="140" rx="15" fill="#FFD700" />
+                                    <rect x="40" y="80" width="140" height="140" rx="15" fill="none" stroke="#fff"
+                                        stroke-width="3" opacity="0.7" /> <!-- Ribbon Vertical -->
+                                    <rect x="105" y="80" width="30" height="140" fill="#fff" opacity="0.9" />
+                                    <!-- Ribbon Horizontal -->
+                                    <rect x="40" y="145" width="140" height="25" fill="#fff" opacity="0.9" />
+                                    <!-- Bow -->
+                                    <circle cx="75" cy="60" r="22" fill="#fff" opacity="0.8" />
+                                    <circle cx="125" cy="60" r="22" fill="#fff" opacity="0.8" />
+                                    <circle cx="100" cy="75" r="16" fill="#FFD700" /> <!-- Floating small boxes -->
+                                    <g opacity="0.9">
+                                        <rect x="180" y="100" width="70" height="70" rx="8" fill="#FF6B6B" />
+                                        <rect x="180" y="100" width="70" height="70" rx="8" fill="none" stroke="#fff"
+                                            stroke-width="2" />
+                                        <text x="215" y="145" font-size="40" text-anchor="middle" fill="#fff">
+                                            💝
+                                        </text>
+                                    </g> <!-- Small heart accents -->
+                                    <g opacity="0.8">
+                                        <path
+                                            d="M240 180 C240 175 245 172 250 180 C255 172 260 175 260 180 C260 190 250 200 250 200 C250 200 240 190 240 180"
+                                            fill="#fff" />
+                                        <path
+                                            d="M50 200 C50 195 55 192 60 200 C65 192 70 195 70 200 C70 210 60 220 60 220 C60 220 50 210 50 200"
+                                            fill="#FFD700" />
+                                    </g> <!-- Stars -->
+                                    <g fill="#fff" opacity="0.7">
+                                        <polygon
+                                            points="270,120 275,135 290,135 278,145 283,160 270,150 257,160 262,145 250,135 265,135" />
+                                        <polygon points="60,50 63,60 75,60 65,68 68,78 60,72 52,78 55,68 45,60 57,60" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                    </div><!-- RIGHT BANNER - Stack (30%) -->
+                    <div class="lg:col-span-1 flex flex-col gap-6"><!-- Top Right Banner - Occasions -->
+                        <div class="flex-1 bg-gradient-to-br from-amber-50 to-rose-50 rounded-2xl overflow-hidden shadow-lg slide-up relative group"
+                            style="animation-delay: 0.4s;">
+                            <div class="relative h-full flex flex-col items-center justify-center z-10 p-6">
+                                <div class="text-center space-y-2">
+                                    <h3 class="font-display text-xl font-bold text-gray-900">Quà cho từng khoảnh khắc
+                                    </h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed">Từ giỏ quà trang trọng<br>
+                                        đến món quà nhỏ đầy tinh tế.</p>
+                                </div>
+                            </div>
+                        </div><!-- Bottom Right Banner - Personalization -->
+                        <div class="flex-1 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl overflow-hidden shadow-lg slide-up relative group"
+                            style="animation-delay: 0.5s;">
+                            <div class="relative h-full flex flex-col items-center justify-center z-10 p-6">
+                                <div class="text-center space-y-2">
+                                    <h3 class="font-display text-xl font-bold text-gray-900">Một tấm thiệp cho riêng bạn
+                                    </h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed">Vì mỗi món quà<br>
+                                        đều xứng đáng có câu chuyện riêng.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- Products Sections Container -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><!-- TET SECTION -->
+            <section id="tet" class="mb-16 slide-up" style="animation-delay: 0.3s;">
+                <div class="mb-6">
+                    <h2 id="tet-title" class="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-2">🧧 Quà
+                        Tặng Tết</h2>
+                    <p class="text-gray-600">Đón Tết sum vầy với những bộ quà sang trọng</p>
+                </div>
+                <div class="relative group">
+                    <div class="product-carousel flex gap-4 overflow-x-auto pb-4" id="carousel-tet"><!-- Product 1 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-red-100 to-amber-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <ellipse cx="100" cy="160" rx="70" ry="20" fill="#8B4513" />
+                                    <path
+                                        d="M30 100 Q30 170 100 170 Q170 170 170 100 L160 100 Q160 160 100 160 Q40 160 40 100 Z"
+                                        fill="#CD853F" />
+                                    <path d="M35 100 Q35 80 100 80 Q165 80 165 100" stroke="#8B4513" stroke-width="4"
+                                        fill="none" />
+                                    <circle cx="70" cy="70" r="25" fill="#FF6347" />
+                                    <circle cx="130" cy="65" r="22" fill="#FFD700" />
+                                    <circle cx="100" cy="55" r="20" fill="#FF4500" />
+                                    <ellipse cx="85" cy="85" rx="15" ry="12" fill="#FFA500" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Giỏ Quà Tết Premium</h3>
+                                <p class="text-gray-600 text-sm mb-3">Quả tươi, bánh kẹo truyền thống</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">1.200.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 2 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <circle cx="100" cy="100" r="60" fill="#DC2626" />
+                                    <circle cx="100" cy="100" r="55" fill="#EF4444" />
+                                    <path d="M100 40 Q130 70 100 100 Q70 70 100 40" fill="#FFD700" opacity="0.8" />
+                                    <ellipse cx="75" cy="85" rx="12" ry="8" fill="#FFA500" />
+                                    <ellipse cx="125" cy="85" rx="12" ry="8" fill="#FFA500" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Giỏ Trái Cây Cao Cấp</h3>
+                                <p class="text-gray-600 text-sm mb-3">Trái cây nhập khẩu tươi ngon</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">950.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 3 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-yellow-100 to-amber-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <rect x="40" y="60" width="120" height="100" rx="10" fill="#8B4513" />
+                                    <rect x="40" y="60" width="120" height="100" rx="10" fill="#CD853F" />
+                                    <rect x="50" y="75" width="100" height="15" fill="#FFD700" />
+                                    <rect x="50" y="105" width="100" height="15" fill="#FFD700" />
+                                    <circle cx="70" cy="90" r="8" fill="#8B4513" />
+                                    <circle cx="100" cy="90" r="8" fill="#8B4513" />
+                                    <circle cx="130" cy="90" r="8" fill="#8B4513" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Hộp Bánh Truyền Thống</h3>
+                                <p class="text-gray-600 text-sm mb-3">Bánh chưng, bánh tết cao cấp</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">750.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 4 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-red-100 to-rose-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <circle cx="100" cy="80" r="35" fill="#8B0000" />
+                                    <circle cx="100" cy="80" r="30" fill="#DC143C" />
+                                    <path d="M75 65 Q70 50 85 55 Q80 40 100 45 Q120 40 115 55 Q130 50 125 65"
+                                        fill="#228B22" />
+                                    <circle cx="85" cy="100" r="15" fill="#8B0000" />
+                                    <circle cx="115" cy="100" r="15" fill="#DC143C" />
+                                    <ellipse cx="100" cy="130" rx="25" ry="35" fill="#228B22" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Bó Hoa Tết Đỏ</h3>
+                                <p class="text-gray-600 text-sm mb-3">Hoa tươi, lộc tươi Tết</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">599.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Navigation Arrows --> <button onclick="scrollCarousel('carousel-tet', -1)"
+                        class="arrow-btn absolute -left-6 top-1/3 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl hidden md:flex">
+                        ❮ </button> <button onclick="scrollCarousel('carousel-tet', 1)"
+                        class="arrow-btn absolute -right-6 top-1/3 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl hidden md:flex">
+                        ❯ </button>
+                </div>
+            </section><!-- VALENTINE SECTION -->
+            <section id="valentine" class="mb-16 slide-up" style="animation-delay: 0.4s;">
+                <div class="mb-6">
+                    <h2 id="valentine-title" class="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-2">💝
+                        Quà Tặng Valentine</h2>
+                    <p class="text-gray-600">Trao yêu thương đến người đặc biệt</p>
+                </div>
+                <div class="relative group">
+                    <div class="product-carousel flex gap-4 overflow-x-auto pb-4" id="carousel-valentine">
+                        <!-- Product 1 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-pink-100 to-red-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <rect x="40" y="90" width="120" height="80" rx="8" fill="#FF69B4" />
+                                    <rect x="40" y="90" width="120" height="80" rx="8" fill="none" stroke="#FFF"
+                                        stroke-width="8" />
+                                    <rect x="35" y="75" width="130" height="20" rx="4" fill="#DC143C" />
+                                    <rect x="90" y="75" width="20" height="95" fill="#FFF" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Quà Valentine Deluxe</h3>
+                                <p class="text-gray-600 text-sm mb-3">Sô-cô-la, nước hoa cao cấp</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">1.050.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 2 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-rose-100 to-pink-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <path
+                                        d="M50 80 Q50 60 70 60 Q85 75 100 60 Q115 75 130 60 Q150 60 150 80 Q150 110 100 140 Q50 110 50 80"
+                                        fill="#FF1493" />
+                                    <path
+                                        d="M75 85 Q75 75 85 75 Q92 83 100 75 Q108 83 115 75 Q125 75 125 85 Q125 105 100 125 Q75 105 75 85"
+                                        fill="#FFB6C1" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Hộp Socola Yêu Thương</h3>
+                                <p class="text-gray-600 text-sm mb-3">Socola nhập khẩu B��, Thụy Sĩ</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">850.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 3 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <rect x="50" y="80" width="100" height="70" rx="8" fill="#8B0000" />
+                                    <circle cx="100" cy="60" r="25" fill="#FFD700" />
+                                    <rect x="85" y="120" width="30" height="40" fill="#228B22" />
+                                    <path d="M100 75 L85 110 L115 110 Z" fill="#FFD700" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Rượu Vang &amp; Socola</h3>
+                                <p class="text-gray-600 text-sm mb-3">Rượu vang cao cấp + socola</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">1.350.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 4 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-red-100 to-pink-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <ellipse cx="100" cy="100" rx="50" ry="55" fill="#FF69B4" />
+                                    <path d="M60 90 Q50 70 70 70 Q80 80 100 70 Q120 80 130 70 Q150 70 140 90"
+                                        fill="#DC143C" />
+                                    <circle cx="85" cy="110" r="8" fill="#FFF" />
+                                    <circle cx="115" cy="110" r="8" fill="#FFF" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Set Nước Hoa Valentine</h3>
+                                <p class="text-gray-600 text-sm mb-3">Bộ 3 chai nước hoa cao cấp</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">1.200.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Navigation Arrows --> <button onclick="scrollCarousel('carousel-valentine', -1)"
+                        class="arrow-btn absolute -left-6 top-1/3 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl hidden md:flex">
+                        ❮ </button> <button onclick="scrollCarousel('carousel-valentine', 1)"
+                        class="arrow-btn absolute -right-6 top-1/3 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl hidden md:flex">
+                        ❯ </button>
+                </div>
+            </section><!-- WOMEN'S DAY SECTION -->
+            <section id="women" class="mb-16 slide-up" style="animation-delay: 0.5s;">
+                <div class="mb-6">
+                    <h2 id="women-title" class="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-2">👩 Quà
+                        Tặng Quốc Tế Phụ Nữ</h2>
+                    <p class="text-gray-600">Tri ân phái đẹp với những bộ quà tinh tế</p>
+                </div>
+                <div class="relative group">
+                    <div class="product-carousel flex gap-4 overflow-x-auto pb-4" id="carousel-women"><!-- Product 1 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <path d="M60 180 L80 100 L120 100 L140 180 Z" fill="#E8B4D8" />
+                                    <ellipse cx="100" cy="115" rx="25" ry="8" fill="#DC2626" />
+                                    <circle cx="100" cy="55" r="22" fill="#FF6B6B" />
+                                    <circle cx="70" cy="70" r="18" fill="#FF69B4" />
+                                    <circle cx="130" cy="70" r="18" fill="#FF69B4" />
+                                    <circle cx="85" cy="85" r="15" fill="#FFB6C1" />
+                                    <circle cx="115" cy="85" r="15" fill="#FFB6C1" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Bó Hoa Hồng 8/3</h3>
+                                <p class="text-gray-600 text-sm mb-3">Hoa hồng tươi nhập khẩu</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">599.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 2 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <rect x="30" y="40" width="140" height="130" rx="15" fill="#FFE4C4" />
+                                    <rect x="30" y="40" width="140" height="130" rx="15" fill="none" stroke="#FFB6C1"
+                                        stroke-width="6" />
+                                    <circle cx="60" cy="75" r="12" fill="#FFC0CB" />
+                                    <circle cx="100" cy="70" r="12" fill="#FFB6C1" />
+                                    <circle cx="140" cy="75" r="12" fill="#FFC0CB" />
+                                    <circle cx="75" cy="110" r="10" fill="#FFB6C1" />
+                                    <circle cx="125" cy="110" r="10" fill="#FFB6C1" />
+                                    <circle cx="100" cy="130" r="12" fill="#FFC0CB" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Mỹ Phẩm Premium 8/3</h3>
+                                <p class="text-gray-600 text-sm mb-3">Bộ mỹ phẩm hàng hiệu</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">2.100.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 3 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-yellow-100 to-pink-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <circle cx="100" cy="80" r="40" fill="#FFD700" />
+                                    <path d="M75 75 Q70 55 90 60 Q85 45 105 50 Q110 65 125 60 Q120 75 100 90 Z"
+                                        fill="#FFA500" />
+                                    <ellipse cx="100" cy="140" rx="45" ry="35" fill="#8B4513" />
+                                    <rect x="80" y="135" width="40" height="50" fill="#D2B48C" opacity="0.7" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Set Tặng Cao Cấp 8/3</h3>
+                                <p class="text-gray-600 text-sm mb-3">Hộp quà sang trọng với nhiều tinh tế</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">1.850.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div><!-- Product 4 -->
+                        <div
+                            class="product-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-red-100 flex-shrink-0">
+                            <div
+                                class="h-48 bg-gradient-to-br from-rose-100 to-red-100 flex items-center justify-center">
+                                <svg viewbox="0 0 200 200" class="w-3/4 h-3/4">
+                                    <rect x="40" y="60" width="120" height="100" rx="12" fill="#FFE4E1" />
+                                    <rect x="40" y="60" width="120" height="100" rx="12" fill="none" stroke="#FF69B4"
+                                        stroke-width="4" />
+                                    <ellipse cx="100" cy="85" rx="35" ry="25" fill="#FF69B4" opacity="0.8" />
+                                    <path d="M70 95 L100 125 L130 95 Z" fill="#FFB6C1" />
+                                </svg>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 mb-1">Quà Trang Sức 8/3</h3>
+                                <p class="text-gray-600 text-sm mb-3">Trang sức bạc cao cấp</p>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-xl font-bold text-red-600">1.950.000đ</span> <button
+                                        class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm">Thêm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Navigation Arrows --> <button onclick="scrollCarousel('carousel-women', -1)"
+                        class="arrow-btn absolute -left-6 top-1/3 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl hidden md:flex">
+                        ❮ </button> <button onclick="scrollCarousel('carousel-women', 1)"
+                        class="arrow-btn absolute -right-6 top-1/3 transform -translate-y-1/2 w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl hidden md:flex">
+                        ❯ </button>
+                </div>
+            </section>
+        </div><!-- Contact Form Section -->
+        <section id="contact" class="w-full py-16 bg-gradient-to-r from-red-50 to-pink-50">
+            <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10 slide-up" style="animation-delay: 0.2s;">
+                    <h2 id="form-title" class="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-2">Liên Hệ
+                        Với Chúng Tôi</h2>
+                    <p id="form-subtitle" class="text-lg text-gray-600">Để lại thông tin để nhận tư vấn quà tặng</p>
+                </div>
+                <form id="contact-form" class="bg-white rounded-2xl shadow-xl p-8 space-y-4 slide-up"
+                    style="animation-delay: 0.3s;">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label for="name" class="block text-gray-700 font-semibold mb-2">Họ và T��n</label> <input
+                                type="text" id="name" name="name" required
+                                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-red-600 transition-colors"
+                                placeholder="Nhập tên của bạn">
+                        </div>
+                        <div><label for="phone" class="block text-gray-700 font-semibold mb-2">Số Điện Thoại</label>
+                            <input type="tel" id="phone" name="phone" required
+                                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-red-600 transition-colors"
+                                placeholder="0987654321">
+                        </div>
+                    </div>
+                    <div><label for="email" class="block text-gray-700 font-semibold mb-2">Email</label> <input
+                            type="email" id="email" name="email" required
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-red-600 transition-colors"
+                            placeholder="email@example.com">
+                    </div>
+                    <div><label for="occasion" class="block text-gray-700 font-semibold mb-2">Dịp Tặng</label> <select
+                            id="occasion" name="occasion"
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-red-600 transition-colors">
+                            <option value="">-- Chọn dịp --</option>
+                            <option value="tet">Quà Tết</option>
+                            <option value="valentine">Quà Valentine</option>
+                            <option value="women">Quà 8/3</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    <div><label for="message" class="block text-gray-700 font-semibold mb-2">Lời Nhắn</label> <textarea
+                            id="message" name="message" rows="4"
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-red-600 transition-colors"
+                            placeholder="Chia s��� yêu cầu hoặc tin nhắn của b����n"></textarea>
+                    </div><button type="submit"
+                        class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-3 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                        Gửi Yêu Cầu </button>
+                    <div id="form-message" class="hidden p-4 rounded-lg text-center font-semibold"></div>
+                </form>
+            </div>
+        </section><!-- Footer -->
+        <footer class="w-full bg-gray-900 text-white py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p class="text-gray-400 mb-2">© 2025 Gift Shop - Gửi tình cảm, gửi tình yêu</p>
+                <p class="text-gray-500 text-sm">Hỗ trợ: 1900 1234 | info@giftshop.vn</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        function scrollCarousel(carouselId, direction) {
+            const carousel = document.getElementById(carouselId);
+            const scrollAmount = carousel.children[0].offsetWidth + 16;
+            carousel.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        document.getElementById('contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formMessage = document.getElementById('form-message');
+            const name = document.getElementById('name').value;
+
+            formMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+            formMessage.classList.add('bg-green-100', 'text-green-700');
+            formMessage.textContent = `Cảm ơn ${name}! Chúng tôi sẽ liên hệ với bạn sớm.`;
+
+            setTimeout(() => {
+                this.reset();
+                formMessage.classList.add('hidden');
+            }, 3000);
+        });
+
+        const defaultConfig = {
+            site_title: 'Gift Shop',
+            hero_title: 'Gửi Tình Cảm, Gửi Tình Yêu',
+            tet_section_title: 'Quà Tặng Tết',
+            valentine_section_title: 'Quà Tặng Valentine',
+            women_section_title: 'Quà Tặng Quốc Tế Phụ Nữ',
+            form_title: 'Liên Hệ Với Chúng Tôi',
+            form_subtitle: 'Để lại thông tin để nhận tư vấn quà tặng',
+            primary_color: '#DC2626',
+            accent_color: '#EF4444',
+            text_color: '#111827',
+            font_family: 'Be Vietnam Pro'
+        };
+
+        async function onConfigChange(config) {
+            document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+            document.getElementById('hero-title').textContent = config.hero_title || defaultConfig.hero_title;
+            document.getElementById('tet-title').textContent = '🧧 ' + (config.tet_section_title || defaultConfig.tet_section_title);
+            document.getElementById('valentine-title').textContent = '💝 ' + (config.valentine_section_title || defaultConfig.valentine_section_title);
+            document.getElementById('women-title').textContent = '👩 ' + (config.women_section_title || defaultConfig.women_section_title);
+            document.getElementById('form-title').textContent = config.form_title || defaultConfig.form_title;
+            document.getElementById('form-subtitle').textContent = config.form_subtitle || defaultConfig.form_subtitle;
+
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+
+            document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes('Thêm') || btn.textContent.includes('G���i')) {
+                    btn.style.backgroundColor = primaryColor;
+                }
+            });
+
+            const fontSize = config.font_size || 16;
+            document.getElementById('hero-title').style.fontSize = `${fontSize * 3.125}px`;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || 16,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ['site_title', config.site_title || defaultConfig.site_title],
+                ['hero_title', config.hero_title || defaultConfig.hero_title],
+                ['tet_section_title', config.tet_section_title || defaultConfig.tet_section_title],
+                ['valentine_section_title', config.valentine_section_title || defaultConfig.valentine_section_title],
+                ['women_section_title', config.women_section_title || defaultConfig.women_section_title],
+                ['form_title', config.form_title || defaultConfig.form_title],
+                ['form_subtitle', config.form_subtitle || defaultConfig.form_subtitle]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9c2ccc0971f4dd8b',t:'MTc2OTIyOTA0Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

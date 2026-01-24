@@ -6,7 +6,7 @@ Website bán quà tặng dạng landing page kết hợp với hệ thống tạ
 
 - ✅ Landing page hiển thị sản phẩm theo dịp (Tết, Valentine, 8/3)
 - ✅ Form thu thập lead khách hàng (SĐT/Email)
-- ✅ Trang admin quản lý sản phẩm và thiệp (Basic Auth)
+- ✅ Trang admin quản lý sản phẩm và thiệp (JWT Authentication)
 - ✅ Tạo thiệp chúc mừng online
 - ✅ Sinh QR code để in vào thiệp vật lý
 - ✅ Trang public hiển thị thiệp khi quét QR
@@ -44,9 +44,10 @@ DB_NAME=gift_shop
 # Production: https://your-domain.com
 BASE_URL=http://localhost:3000
 
-# Basic Auth cho Admin
+# Admin Authentication
 ADMIN_USER=admin
 ADMIN_PASS=your-secure-password
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
 ```
 
 ### 3. Chạy development server
@@ -60,23 +61,32 @@ Mở [http://localhost:3000](http://localhost:3000) để xem website.
 ## Cấu trúc URL
 
 - `/` - Landing page (public)
-- `/admin` - Trang admin (protected by Basic Auth)
+- `/admin/login` - Trang đăng nhập admin
+- `/admin` - Trang admin (protected by JWT)
 - `/admin/products` - Quản lý sản phẩm
 - `/admin/cards` - Tạo & quản lý thiệp
 - `/c/[code]` - Trang thiệp public (khi quét QR)
 - `/api/leads` - API nhận lead (POST)
 - `/api/products` - API lấy sản phẩm public (GET)
-- `/api/admin/*` - API admin (protected)
+- `/api/admin/login` - API đăng nhập (POST)
+- `/api/admin/logout` - API đăng xuất (POST)
+- `/api/admin/*` - API admin (protected by JWT)
 
 ## Sử dụng
 
-### 1. Tạo sản phẩm
+### 1. Đăng nhập Admin
 
-1. Truy cập `/admin/products` (cần Basic Auth)
+1. Truy cập `/admin/login`
+2. Nhập username và password (mặc định: `admin` / `admin123`)
+3. Sau khi đăng nhập thành công, bạn sẽ được chuyển đến `/admin`
+
+### 2. Tạo sản phẩm
+
+1. Truy cập `/admin/products` (cần đăng nhập)
 2. Điền tên sản phẩm và chọn dịp
 3. Click "Tạo"
 
-### 2. Tạo thiệp chúc mừng
+### 3. Tạo thiệp chúc mừng
 
 1. Truy cập `/admin/cards`
 2. Điền thông tin:
@@ -88,7 +98,7 @@ Mở [http://localhost:3000](http://localhost:3000) để xem website.
 4. Click "Tải QR (PNG)" để tải QR code
 5. In QR code và dán vào thiệp vật lý
 
-### 3. Quét QR và xem thiệp
+### 4. Quét QR và xem thiệp
 
 Khách hàng quét QR code → mở trang `/c/[code]` để xem thiệp.
 
@@ -102,6 +112,7 @@ Khách hàng quét QR code → mở trang `/c/[code]` để xem thiệp.
    - `BASE_URL` (domain production của bạn)
    - `ADMIN_USER`
    - `ADMIN_PASS`
+   - `JWT_SECRET` (secret key để sign JWT tokens)
 4. Deploy!
 
 ## Lưu ý quan trọng
@@ -114,7 +125,7 @@ Khách hàng quét QR code → mở trang `/c/[code]` để xem thiệp.
 
 - [x] Landing hiển thị được
 - [x] Form lead ghi được DB
-- [x] Admin vào được (Basic Auth)
+- [x] Admin vào được (JWT Authentication)
 - [x] Tạo được thiệp
 - [x] QR tải được
 - [x] Quét QR mở đúng thiệp

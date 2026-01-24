@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 import { makeQrPng } from "@/lib/qr";
+import { requireAdminOrResponse } from "@/lib/adminAuth";
 
 function getBaseUrl() {
     return process.env.BASE_URL || "http://localhost:3000";
@@ -8,6 +9,9 @@ function getBaseUrl() {
 
 export async function GET(_: Request, ctx: { params: Promise<{ id: string }> }) {
     try {
+        const auth = await requireAdminOrResponse();
+        if (auth instanceof Response) return auth;
+
         const { id } = await ctx.params;
 
         // Validate ObjectId format

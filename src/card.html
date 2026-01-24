@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="vi" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Thiệp Chúc Mừng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&amp;family=Quicksand:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .font-script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Card animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes bloom {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .sparkle {
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .bloom {
+            animation: bloom 1s ease-out forwards;
+        }
+
+        /* Decorative elements */
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .petal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50% 0;
+        }
+
+        /* Card styles */
+        .card-newyear {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%);
+        }
+
+        .card-valentine {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 50%, #db2777 100%);
+        }
+
+        .card-womensday {
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 50%, #7e22ce 100%);
+        }
+
+        /* Tab styles */
+        .tab-active {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .tab-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .tab-inactive:hover {
+            background: #e5e7eb;
+        }
+    </style>
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+</head>
+
+<body class="h-full bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+    <div id="app" class="h-full overflow-auto"><!-- Header -->
+        <header class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+            <div class="max-w-6xl mx-auto px-4 py-4">
+                <h1 id="app-title"
+                    class="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500 bg-clip-text text-transparent font-script">
+                    ✨ Tạo Thiệp Chúc Mừng ✨</h1>
+            </div>
+        </header><!-- Main Content -->
+        <main class="max-w-6xl mx-auto px-4 py-6"><!-- View Toggle -->
+            <div class="flex justify-center mb-6">
+                <div class="inline-flex bg-white rounded-full p-1 shadow-lg"><button id="btn-create"
+                        onclick="switchView('create')"
+                        class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 tab-active"> ✏️
+                        Tạo Thiệp </button> <button id="btn-saved" onclick="switchView('saved')"
+                        class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 tab-inactive">
+                        💾 Thiệp Đã Lưu (<span id="saved-count">0</span>) </button>
+                </div>
+            </div><!-- Create View -->
+            <div id="create-view" class="grid lg:grid-cols-2 gap-8"><!-- Form Section -->
+                <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"><span
+                            class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white text-sm">1</span>
+                        Nhập Thông Tin Thiệp</h2>
+                    <form id="card-form" class="space-y-5"><!-- Occasion Selection -->
+                        <div><label class="block text-sm font-semibold text-gray-700 mb-3">Chọn Dịp 🎉</label>
+                            <div class="grid grid-cols-3 gap-3"><button type="button"
+                                    onclick="selectOccasion('newyear')" id="occ-newyear"
+                                    class="occasion-btn p-4 rounded-2xl border-2 border-red-200 bg-red-50 hover:bg-red-100 transition-all duration-300 group">
+                                    <div class="text-3xl mb-1">
+                                        🎆
+                                    </div>
+                                    <div class="text-xs font-semibold text-red-700">
+                                        Năm Mới
+                                    </div>
+                                </button> <button type="button" onclick="selectOccasion('valentine')" id="occ-valentine"
+                                    class="occasion-btn p-4 rounded-2xl border-2 border-pink-200 bg-pink-50 hover:bg-pink-100 transition-all duration-300 group">
+                                    <div class="text-3xl mb-1">
+                                        💕
+                                    </div>
+                                    <div class="text-xs font-semibold text-pink-700">
+                                        Valentine
+                                    </div>
+                                </button> <button type="button" onclick="selectOccasion('womensday')" id="occ-womensday"
+                                    class="occasion-btn p-4 rounded-2xl border-2 border-purple-200 bg-purple-50 hover:bg-purple-100 transition-all duration-300 group">
+                                    <div class="text-3xl mb-1">
+                                        🌸
+                                    </div>
+                                    <div class="text-xs font-semibold text-purple-700">
+                                        8/3
+                                    </div>
+                                </button>
+                            </div>
+                        </div><!-- Recipient Name -->
+                        <div><label for="recipient" class="block text-sm font-semibold text-gray-700 mb-2">Gửi Đến
+                                💌</label> <input type="text" id="recipient" placeholder="Tên người nhận..."
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:ring-4 focus:ring-pink-100 outline-none transition-all duration-300 text-gray-700"
+                                oninput="updatePreview()">
+                        </div><!-- Sender Name -->
+                        <div><label for="sender" class="block text-sm font-semibold text-gray-700 mb-2">Người Gửi
+                                ✍️</label> <input type="text" id="sender" placeholder="Tên của bạn..."
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:ring-4 focus:ring-pink-100 outline-none transition-all duration-300 text-gray-700"
+                                oninput="updatePreview()">
+                        </div><!-- Message Type Selection -->
+                        <div><label class="block text-sm font-semibold text-gray-700 mb-3">Loại Lời Chúc 💬</label>
+                            <div class="flex gap-3 mb-3"><button type="button" onclick="setMessageType('custom')"
+                                    id="msg-type-custom"
+                                    class="flex-1 py-2 px-4 rounded-xl border-2 border-pink-300 bg-pink-500 text-white font-semibold transition-all duration-300">
+                                    ✍️ Tự viết </button> <button type="button" onclick="setMessageType('default')"
+                                    id="msg-type-default"
+                                    class="flex-1 py-2 px-4 rounded-xl border-2 border-gray-300 bg-white text-gray-600 hover:bg-gray-50 font-semibold transition-all duration-300">
+                                    📝 Lời chúc mẫu </button>
+                            </div>
+                        </div><!-- Custom Message Input -->
+                        <div id="custom-message-section"><label for="message"
+                                class="block text-sm font-semibold text-gray-700 mb-2">Nội Dung Lời Chúc</label>
+                            <textarea id="message" rows="4" placeholder="Viết lời chúc của bạn..."
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:ring-4 focus:ring-pink-100 outline-none transition-all duration-300 text-gray-700 resize-none"
+                                oninput="updatePreview()"></textarea>
+                        </div><!-- Default Message Selection -->
+                        <div id="default-message-section" class="hidden"><label for="default-message-select"
+                                class="block text-sm font-semibold text-gray-700 mb-2">Chọn Lời Chúc Mẫu</label> <select
+                                id="default-message-select" onchange="onDefaultMessageChange()"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:ring-4 focus:ring-pink-100 outline-none transition-all duration-300 text-gray-700 bg-white">
+                                <option value="">-- Chọn lời chúc --</option>
+                            </select>
+                            <div id="selected-message-preview"
+                                class="mt-3 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border-2 border-pink-200 hidden">
+                                <p class="text-sm text-gray-700 italic leading-relaxed"></p>
+                            </div>
+                        </div><!-- Action Buttons -->
+                        <div class="flex gap-3 pt-2"><button type="submit"
+                                class="flex-1 py-3 px-6 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                                💾 Lưu Thiệp </button> <button type="button" onclick="resetForm()"
+                                class="py-3 px-6 bg-gray-100 text-gray-600 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-300">
+                                🔄 </button>
+                        </div>
+                    </form>
+                </div><!-- Preview Section -->
+                <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"><span
+                            class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm">2</span>
+                        Xem Trước Thiệp</h2>
+                    <div id="card-preview" class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                        <!-- Card content will be rendered here -->
+                    </div>
+                </div>
+            </div><!-- Saved Cards View -->
+            <div id="saved-view" class="hidden">
+                <div id="saved-cards-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Saved cards will be rendered here -->
+                </div>
+                <div id="empty-state" class="hidden text-center py-16">
+                    <div class="text-6xl mb-4">
+                        📭
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Chưa có thiệp nào</h3>
+                    <p class="text-gray-400 mb-6">Hãy tạo thi���p đầu tiên của bạn!</p><button
+                        onclick="switchView('create')"
+                        class="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                        ✨ Tạo Thiệp Ngay </button>
+                </div>
+            </div>
+        </main><!-- Toast Notification -->
+        <div id="toast"
+            class="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-gray-800 text-white rounded-full shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+            <span id="toast-message"></span>
+        </div><!-- Loading Overlay -->
+        <div id="loading"
+            class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-2xl flex items-center gap-3">
+                <div class="w-6 h-6 border-3 border-pink-500 border-t-transparent rounded-full animate-spin"></div><span
+                    class="text-gray-700 font-medium">Đang xử lý...</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Default configuration
+        const defaultConfig = {
+            app_title: '✨ Tạo Thiệp Chúc Mừng ✨',
+            primary_color: '#ec4899',
+            secondary_color: '#f472b6',
+            text_color: '#1f2937',
+            background_color: '#fdf2f8',
+            accent_color: '#a855f7'
+        };
+
+        let config = { ...defaultConfig };
+        let savedCards = [];
+        let currentOccasion = 'newyear';
+        let currentRecordCount = 0;
+        let messageType = 'custom'; // 'custom' or 'default'
+        let selectedDefaultMessage = '';
+
+        // Default messages for each occasion
+        const defaultMessages = {
+            newyear: [
+                'Chúc mừng năm mới! Chúc bạn một năm mới tràn đầy niềm vui, sức khỏe và thành công. Mọi điều tốt đẹp nhất sẽ đến với bạn! 🎆🧧',
+                'Năm mới phát tài phát lộc! Chúc gia đình bạn luôn hạnh phúc, ấm no và thịnh vượng. Vạn sự như ý! 🧧✨',
+                'Happy New Year! Chúc bạn một năm mới tràn đầy may mắn, gặp nhiều thuận lợi trong công việc và cuộc sống! 🎊🎉',
+                'Xuân về đón lộc, vui đón năm mới! Chúc bạn luôn tươi trẻ, khỏe mạnh và thành đạt trong mọi lĩnh vực! 🏮🌸',
+                'Chúc mừng năm mới! Cầu mong mọi điều tốt lành, hạnh phúc và thành công sẽ đến với bạn trong năm mới này! 🎇💫'
+            ],
+            valentine: [
+                'Happy Valentine! Gửi đến người đặc biệt những lời yêu thương chân thành nhất. Cảm ơn vì đã luôn ở bên cạnh! 💕💖',
+                'Anh/Em yêu em/anh! Trong ngày Valentine này, anh/em muốn nói rằng em/anh là điều tuyệt vời nhất trong cuộc đời anh/em! 💝💗',
+                'Happy Valentine\'s Day! Cảm ơn vì đã làm cho cuộc sống của anh/em thêm ý nghĩa. Yêu em/anh mãi mãi! ❤️💘',
+                'Chúc mừng ngày lễ tình nhân! Gửi đến người yêu thương những khoảnh khắc ngọt ngào và hạnh phúc nhất! 💖✨',
+                'Em/Anh là ánh sáng trong cuộc đời anh/em. Happy Valentine! Yêu em/anh nhiều lắm! 💕🌹'
+            ],
+            womensday: [
+                'Chúc mừng ngày Quốc tế Phụ nữ 8/3! Chúc bạn luôn xinh đẹp, hạnh phúc và tỏa sáng như những bông hoa mùa xuân! 🌸🌷',
+                'Happy Women\'s Day! Chúc các chị em phụ nữ luôn mạnh mẽ, tự tin và thành công trong mọi lĩnh vực! 🌺💐',
+                'Chúc mừng 8/3! Gửi đến bạn những lời chúc tốt đẹp nhất. Chúc bạn luôn vui vẻ, hạnh phúc và tràn đầy năng lượng! 🌹✨',
+                'Ngày 8/3 - Ngày của những người phụ nữ tuyệt vời! Chúc bạn luôn rạng rỡ và được yêu thương! 🌻💝',
+                'Chúc mừng ngày Phụ nữ Việt Nam! Chúc bạn mãi xinh đẹp, hạnh phúc và thành đạt trong cuộc sống! 🌷🎀'
+            ]
+        };
+
+        // Occasion themes
+        const themes = {
+            newyear: {
+                gradient: 'from-red-600 via-red-700 to-red-900',
+                accent: '#fbbf24',
+                icon: '🎆',
+                title: 'CHÚC MỪNG NĂM MỚI',
+                decorations: ['🧧', '🎊', '🏮', '✨', '🎇']
+            },
+            valentine: {
+                gradient: 'from-pink-400 via-rose-500 to-pink-600',
+                accent: '#fff',
+                icon: '💕',
+                title: 'HAPPY VALENTINE',
+                decorations: ['💖', '💝', '💗', '❤️', '💘']
+            },
+            womensday: {
+                gradient: 'from-purple-500 via-fuchsia-500 to-pink-500',
+                accent: '#fef3c7',
+                icon: '🌸',
+                title: 'CHÚC MỪNG 8/3',
+                decorations: ['🌷', '🌺', '🌹', '💐', '🌻']
+            }
+        };
+
+        // Select occasion
+        function selectOccasion(occasion) {
+            currentOccasion = occasion;
+
+            // Update button styles
+            document.querySelectorAll('.occasion-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-offset-2', 'scale-105');
+            });
+
+            const selectedBtn = document.getElementById(`occ-${occasion}`);
+            const ringColors = {
+                newyear: 'ring-red-400',
+                valentine: 'ring-pink-400',
+                womensday: 'ring-purple-400'
+            };
+
+            selectedBtn.classList.add('ring-4', 'ring-offset-2', 'scale-105', ringColors[occasion]);
+
+            // Update default messages dropdown
+            populateDefaultMessages();
+
+            updatePreview();
+        }
+
+        // Set message type (custom or default)
+        function setMessageType(type) {
+            messageType = type;
+
+            const customSection = document.getElementById('custom-message-section');
+            const defaultSection = document.getElementById('default-message-section');
+            const customBtn = document.getElementById('msg-type-custom');
+            const defaultBtn = document.getElementById('msg-type-default');
+
+            if (type === 'custom') {
+                customSection.classList.remove('hidden');
+                defaultSection.classList.add('hidden');
+                customBtn.classList.remove('bg-white', 'text-gray-600');
+                customBtn.classList.add('bg-pink-500', 'text-white');
+                defaultBtn.classList.remove('bg-pink-500', 'text-white');
+                defaultBtn.classList.add('bg-white', 'text-gray-600');
+            } else {
+                customSection.classList.add('hidden');
+                defaultSection.classList.remove('hidden');
+                customBtn.classList.remove('bg-pink-500', 'text-white');
+                customBtn.classList.add('bg-white', 'text-gray-600');
+                defaultBtn.classList.remove('bg-white', 'text-gray-600');
+                defaultBtn.classList.add('bg-pink-500', 'text-white');
+
+                populateDefaultMessages();
+            }
+
+            updatePreview();
+        }
+
+        // Populate default messages dropdown
+        function populateDefaultMessages() {
+            const select = document.getElementById('default-message-select');
+            const messages = defaultMessages[currentOccasion] || [];
+
+            select.innerHTML = '<option value="">-- Chọn lời chúc --</option>';
+
+            messages.forEach((msg, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                // Show first 50 characters as preview
+                option.textContent = msg.length > 50 ? msg.substring(0, 50) + '...' : msg;
+                select.appendChild(option);
+            });
+
+            // Reset selection
+            selectedDefaultMessage = '';
+            document.getElementById('selected-message-preview').classList.add('hidden');
+        }
+
+        // Handle default message selection change
+        function onDefaultMessageChange() {
+            const select = document.getElementById('default-message-select');
+            const previewDiv = document.getElementById('selected-message-preview');
+            const previewText = previewDiv.querySelector('p');
+
+            if (select.value !== '') {
+                const index = parseInt(select.value);
+                selectedDefaultMessage = defaultMessages[currentOccasion][index];
+                previewText.textContent = selectedDefaultMessage;
+                previewDiv.classList.remove('hidden');
+            } else {
+                selectedDefaultMessage = '';
+                previewDiv.classList.add('hidden');
+            }
+
+            updatePreview();
+        }
+
+        // Update card preview
+        function updatePreview() {
+            const recipient = document.getElementById('recipient').value || 'Người thân yêu';
+            const sender = document.getElementById('sender').value || 'Người gửi';
+
+            // Get message based on type
+            let message;
+            if (messageType === 'custom') {
+                message = document.getElementById('message').value || 'Lời chúc của bạn sẽ hiển thị ở đây...';
+            } else {
+                message = selectedDefaultMessage || 'Vui lòng chọn lời chúc mẫu...';
+            }
+
+            const theme = themes[currentOccasion];
+            const preview = document.getElementById('card-preview');
+
+            preview.innerHTML = generateCardHTML(currentOccasion, recipient, sender, message, theme);
+        }
+
+        // Generate card HTML
+        function generateCardHTML(occasion, recipient, sender, message, theme, isPreview = true) {
+            const decorations = theme.decorations.map((d, i) =>
+                `<span class="absolute text-2xl opacity-60 ${isPreview ? 'sparkle' : ''}" style="top: ${10 + Math.random() * 20}%; left: ${5 + i * 20}%; animation-delay: ${i * 0.3}s">${d}</span>`
+            ).join('');
+
+            let cardClass = '';
+            if (occasion === 'newyear') cardClass = 'card-newyear';
+            else if (occasion === 'valentine') cardClass = 'card-valentine';
+            else cardClass = 'card-womensday';
+
+            return `
+        <div class="relative w-full h-full ${cardClass} p-6 flex flex-col items-center justify-center text-white overflow-hidden">
+          <!-- Decorations -->
+          ${decorations}
+          
+          <!-- Main Content -->
+          <div class="relative z-10 text-center max-w-full">
+            <div class="text-4xl mb-2 ${isPreview ? 'float-animation' : ''}">${theme.icon}</div>
+            <h3 class="text-lg md:text-xl font-bold tracking-wider mb-3 drop-shadow-lg">${theme.title}</h3>
+            
+            <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mb-4 max-w-sm mx-auto">
+              <p class="text-sm mb-2">Gửi đến: <span class="font-bold font-script text-xl">${escapeHtml(recipient)}</span></p>
+              <p class="text-sm leading-relaxed italic">"${escapeHtml(message)}"</p>
+            </div>
+            
+            <p class="text-sm opacity-90">Từ: <span class="font-semibold font-script text-lg">${escapeHtml(sender)}</span></p>
+          </div>
+          
+          <!-- Bottom decoration -->
+          <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-2 opacity-50">
+            ${theme.decorations.slice(0, 3).map(d => `<span class="text-xl">${d}</span>`).join('')}
+          </div>
+        </div>
+      `;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Switch between views
+        function switchView(view) {
+            const createView = document.getElementById('create-view');
+            const savedView = document.getElementById('saved-view');
+            const btnCreate = document.getElementById('btn-create');
+            const btnSaved = document.getElementById('btn-saved');
+
+            if (view === 'create') {
+                createView.classList.remove('hidden');
+                savedView.classList.add('hidden');
+                btnCreate.classList.remove('tab-inactive');
+                btnCreate.classList.add('tab-active');
+                btnSaved.classList.remove('tab-active');
+                btnSaved.classList.add('tab-inactive');
+            } else {
+                createView.classList.add('hidden');
+                savedView.classList.remove('hidden');
+                btnCreate.classList.remove('tab-active');
+                btnCreate.classList.add('tab-inactive');
+                btnSaved.classList.remove('tab-inactive');
+                btnSaved.classList.add('tab-active');
+                renderSavedCards();
+            }
+        }
+
+        // Render saved cards
+        function renderSavedCards() {
+            const container = document.getElementById('saved-cards-container');
+            const emptyState = document.getElementById('empty-state');
+
+            if (savedCards.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            // Update existing cards or create new ones
+            const existingCards = new Map([...container.children].map(el => [el.dataset.cardId, el]));
+
+            savedCards.forEach(card => {
+                const theme = themes[card.occasion] || themes.newyear;
+
+                if (existingCards.has(card.__backendId)) {
+                    // Update existing card
+                    const el = existingCards.get(card.__backendId);
+                    el.querySelector('.card-content').innerHTML = generateCardHTML(card.occasion, card.recipient_name, card.sender_name, card.message, theme, false);
+                    existingCards.delete(card.__backendId);
+                } else {
+                    // Create new card element
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300';
+                    cardEl.dataset.cardId = card.__backendId;
+
+                    cardEl.innerHTML = `
+            <div class="card-content aspect-[4/3]">
+              ${generateCardHTML(card.occasion, card.recipient_name, card.sender_name, card.message, theme, false)}
+            </div>
+            <div class="p-4 flex justify-between items-center">
+              <div>
+                <p class="text-sm font-semibold text-gray-700">Gửi: ${escapeHtml(card.recipient_name)}</p>
+                <p class="text-xs text-gray-400">${formatDate(card.created_at)}</p>
+              </div>
+              <button onclick="confirmDelete('${card.__backendId}')" class="delete-btn p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+
+                    container.appendChild(cardEl);
+                }
+            });
+
+            // Remove deleted cards
+            existingCards.forEach(el => el.remove());
+        }
+
+        // Confirm delete with inline confirmation
+        let deleteConfirmId = null;
+        function confirmDelete(cardId) {
+            if (deleteConfirmId === cardId) {
+                // Second click - delete
+                deleteCard(cardId);
+                deleteConfirmId = null;
+            } else {
+                // First click - show confirmation
+                deleteConfirmId = cardId;
+                showToast('Nhấn lần nữa để xóa');
+
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    if (deleteConfirmId === cardId) {
+                        deleteConfirmId = null;
+                    }
+                }, 3000);
+            }
+        }
+
+        // Delete card
+        async function deleteCard(cardId) {
+            const card = savedCards.find(c => c.__backendId === cardId);
+            if (!card) return;
+
+            showLoading(true);
+
+            if (window.dataSdk) {
+                const result = await window.dataSdk.delete(card);
+                if (!result.isOk) {
+                    showToast('Không thể xóa thiệp!');
+                }
+            }
+
+            showLoading(false);
+        }
+
+        // Format date
+        function formatDate(isoString) {
+            try {
+                const date = new Date(isoString);
+                return date.toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch {
+                return '';
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('recipient').value = '';
+            document.getElementById('sender').value = '';
+            document.getElementById('message').value = '';
+
+            // Reset to custom message type
+            setMessageType('custom');
+
+            // Reset default message selection
+            selectedDefaultMessage = '';
+            const select = document.getElementById('default-message-select');
+            if (select) select.value = '';
+            document.getElementById('selected-message-preview').classList.add('hidden');
+
+            updatePreview();
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // Show/hide loading
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.remove('hidden');
+            } else {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // Update saved count
+        function updateSavedCount() {
+            document.getElementById('saved-count').textContent = savedCards.length;
+            currentRecordCount = savedCards.length;
+        }
+
+        // Form submission
+        document.getElementById('card-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const recipient = document.getElementById('recipient').value.trim();
+            const sender = document.getElementById('sender').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            if (!recipient || !sender || !message) {
+                showToast('Vui lòng điền đ��y đủ thông tin!');
+                return;
+            }
+
+            if (currentRecordCount >= 999) {
+                showToast('Đã đạt giới hạn 999 thiệp!');
+                return;
+            }
+
+            showLoading(true);
+
+            const cardData = {
+                id: Date.now().toString(),
+                occasion: currentOccasion,
+                sender_name: sender,
+                recipient_name: recipient,
+                message: message,
+                created_at: new Date().toISOString()
+            };
+
+            if (window.dataSdk) {
+                const result = await window.dataSdk.create(cardData);
+                if (result.isOk) {
+                    showToast('Đã lưu thiệp thành công! 🎉');
+                    resetForm();
+                } else {
+                    showToast('Không thể lưu thiệp!');
+                }
+            }
+
+            showLoading(false);
+        });
+
+        // Data handler for SDK
+        const dataHandler = {
+            onDataChanged(data) {
+                savedCards = data;
+                updateSavedCount();
+
+                // Update saved view if visible
+                if (!document.getElementById('saved-view').classList.contains('hidden')) {
+                    renderSavedCards();
+                }
+            }
+        };
+
+        // Apply config to UI
+        function applyConfig() {
+            const titleEl = document.getElementById('app-title');
+            if (titleEl) {
+                titleEl.textContent = config.app_title || defaultConfig.app_title;
+            }
+        }
+
+        // Element SDK integration
+        async function initElementSdk() {
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (newConfig) => {
+                        config = { ...defaultConfig, ...newConfig };
+                        applyConfig();
+                    },
+                    mapToCapabilities: (cfg) => ({
+                        recolorables: [
+                            {
+                                get: () => cfg.background_color || defaultConfig.background_color,
+                                set: (value) => {
+                                    cfg.background_color = value;
+                                    window.elementSdk.setConfig({ background_color: value });
+                                }
+                            },
+                            {
+                                get: () => cfg.primary_color || defaultConfig.primary_color,
+                                set: (value) => {
+                                    cfg.primary_color = value;
+                                    window.elementSdk.setConfig({ primary_color: value });
+                                }
+                            },
+                            {
+                                get: () => cfg.text_color || defaultConfig.text_color,
+                                set: (value) => {
+                                    cfg.text_color = value;
+                                    window.elementSdk.setConfig({ text_color: value });
+                                }
+                            }
+                        ],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (cfg) => new Map([
+                        ['app_title', cfg.app_title || defaultConfig.app_title]
+                    ])
+                });
+            }
+        }
+
+        // Initialize app
+        async function init() {
+            // Initialize Element SDK
+            await initElementSdk();
+
+            // Initialize Data SDK
+            if (window.dataSdk) {
+                const result = await window.dataSdk.init(dataHandler);
+                if (!result.isOk) {
+                    console.error('Failed to initialize Data SDK');
+                }
+            }
+
+            // Set default occasion
+            selectOccasion('newyear');
+
+            // Apply initial config
+            applyConfig();
+        }
+
+        init();
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9c2d0883b4718610',t:'MTc2OTIzMTUxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

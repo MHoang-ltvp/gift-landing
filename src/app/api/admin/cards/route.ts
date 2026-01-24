@@ -1,24 +1,32 @@
 import { getDb } from "@/lib/db";
 import { nanoid } from "nanoid";
+import { requireAdminOrResponse } from "@/lib/adminAuth";
 
 function getBaseUrl() {
   return process.env.BASE_URL || "http://localhost:3000";
 }
 
 export async function GET() {
+  const auth = await requireAdminOrResponse();
+  if (auth instanceof Response) return auth;
+
   const db = await getDb();
   const cards = await db.collection("cards").find({}).sort({ createdAt: -1 }).toArray();
   return Response.json({ cards });
 }
 
 export async function POST(req: Request) {
+  const auth = await requireAdminOrResponse();
+  if (auth instanceof Response) return auth;
+
   const body = await req.json().catch(() => ({}));
 
-  const template = body.template?.toString().trim();
+  const template = body.template?.toString().trim() || "";
+  const occasion = body.occasion?.toString().trim() || "";
   const payload = body.payload && typeof body.payload === "object" ? body.payload : {};
 
-  if (!template) {
-    return Response.json({ error: "template is required" }, { status: 400 });
+  if (!template && !occasion) {
+    return Response.json({ error: "template or occasion is required" }, { status: 400 });
   }
 
   const db = await getDb();
@@ -37,9 +45,8 @@ export async function POST(req: Request) {
     return Response.json({ error: "Failed to generate code" }, { status: 500 });
   }
 
-  const card = {
+  const card: any = {
     code,
-    template,
     payload: {
       toName: payload.toName?.toString().trim() || "",
       fromName: payload.fromName?.toString().trim() || "",
@@ -47,6 +54,9 @@ export async function POST(req: Request) {
     },
     createdAt: new Date().toISOString(),
   };
+
+  if (template) card.template = template;
+  if (occasion) card.occasion = occasion;
 
   const r = await db.collection("cards").insertOne(card);
 

@@ -1,4 +1,8 @@
+import Header from "./components/Header";
+import HeroBanner from "./components/HeroBanner";
+import ProductSection from "./components/ProductSection";
 import LeadForm from "./components/LeadForm";
+import Footer from "./components/Footer";
 import { getDb } from "@/lib/db";
 import type { Product, Occasion } from "@/types";
 
@@ -14,7 +18,19 @@ async function getProducts(occasion?: Occasion) {
         .sort({ createdAt: -1 })
         .limit(20)
         .toArray();
-    return products as Product[];
+    
+    // Convert MongoDB documents to plain objects for Client Components
+    return products.map((product: any) => ({
+        _id: product._id.toString(),
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        image: product.image,
+        images: product.images,
+        occasion: product.occasion,
+        active: product.active,
+        createdAt: product.createdAt,
+    })) as Product[];
 }
 
 export default async function Home() {
@@ -24,60 +40,42 @@ export default async function Home() {
         getProducts("8-3"),
     ]);
 
+    // Get all products for search
+    const allProducts = await getProducts();
+
     const occasionLabels: Record<Occasion, string> = {
-        tet: "Tết",
-        valentine: "Valentine",
-        "8-3": "8/3",
+        tet: "Danh mục Tết",
+        valentine: "Danh mục Valentine",
+        "8-3": "Quốc tế phụ nữ",
     };
 
     return (
-        <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 1200, margin: "0 auto" }}>
-            <h1 style={{ fontSize: 32, marginBottom: 8 }}>Gift Landing</h1>
-            <p style={{ color: "#666", marginBottom: 32 }}>Quà tặng cho mọi dịp đặc biệt</p>
+        <>
+            <Header allProducts={allProducts} />
+            <HeroBanner />
+            
+            {/* Product Sections */}
+            <ProductSection
+                occasion="tet"
+                products={tetProducts}
+                label={occasionLabels.tet}
+            />
+            <ProductSection
+                occasion="valentine"
+                products={valentineProducts}
+                label={occasionLabels.valentine}
+            />
+            <ProductSection
+                occasion="8-3"
+                products={products83}
+                label={occasionLabels["8-3"]}
+            />
 
-            {/* Sản phẩm theo dịp */}
-            {[
-                { occasion: "tet" as Occasion, products: tetProducts },
-                { occasion: "valentine" as Occasion, products: valentineProducts },
-                { occasion: "8-3" as Occasion, products: products83 },
-            ].map(({ occasion, products }) => (
-                products.length > 0 && (
-                    <section key={occasion} style={{ marginBottom: 40 }}>
-                        <h2 style={{ fontSize: 24, marginBottom: 16 }}>
-                            {occasionLabels[occasion]}
-                        </h2>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: 16 }}>
-                            {products.map((p) => (
-                                <div
-                                    key={p._id}
-                                    style={{
-                                        padding: 16,
-                                        border: "1px solid #e0e0e0",
-                                        borderRadius: 8,
-                                        backgroundColor: "#fff",
-                                    }}
-                                >
-                                    <h3 style={{ margin: "0 0 8px 0", fontSize: 18 }}>{p.title}</h3>
-                                    {p.price && (
-                                        <p style={{ margin: 0, color: "#d32f2f", fontWeight: 600 }}>
-                                            {p.price.toLocaleString("vi-VN")} đ
-                                        </p>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                )
-            ))}
+            {/* Lead Form */}
+            <LeadForm />
 
-            {/* Form thu thập lead */}
-            <section style={{ marginTop: 48, padding: 24, border: "1px solid #e0e0e0", borderRadius: 8, backgroundColor: "#f9f9f9" }}>
-                <h2 style={{ fontSize: 24, marginBottom: 16 }}>Để lại thông tin</h2>
-                <p style={{ color: "#666", marginBottom: 16 }}>
-                    Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!
-                </p>
-                <LeadForm />
-            </section>
-        </main>
+            {/* Footer */}
+            <Footer />
+        </>
     );
 }

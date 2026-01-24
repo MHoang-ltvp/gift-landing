@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { verifyToken } from "./src/lib/auth";
 
 export const config = {
     matcher: [
@@ -9,70 +10,63 @@ export const config = {
     ],
 };
 
-export function middleware(req: NextRequest) {
-    // Log ngay đầu để đảm bảo middleware chạy
-    console.log("\n========== MIDDLEWARE TRIGGERED ==========");
+// Routes không cần auth
+const PUBLIC_ROUTES = ["/admin/login", "/api/admin/login", "/api/admin/logout"];
 
+export async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
 
-    // Debug log chi tiết
-    console.log(`🔒 [Middleware] ==========================================`);
-    console.log(`📍 Path: ${pathname}`);
-    console.log(`🌐 Method: ${req.method}`);
-    console.log(`🔑 ADMIN_USER configured: ${!!process.env.ADMIN_USER}`);
-    console.log(`🔑 ADMIN_PASS configured: ${!!process.env.ADMIN_PASS}`);
-
-    const user = process.env.ADMIN_USER || "";
-    const pass = process.env.ADMIN_PASS || "";
-
-    if (!user || !pass) {
-        console.error("❌ [Middleware] ADMIN_USER or ADMIN_PASS not configured");
-        return new NextResponse("Admin is not configured", { status: 503 });
+    // Debug nhẹ để biết middleware có chạy hay không (dev only)
+    if (process.env.NODE_ENV === "development") {
+        // eslint-disable-next-line no-console
+        console.log(`[middleware] ${req.method} ${pathname}`);
     }
 
-    const auth = req.headers.get("authorization") || "";
-    console.log(`🔐 Authorization header present: ${!!auth}`);
-    if (auth) {
-        console.log(`🔐 Authorization header: ${auth.substring(0, 20)}...`);
+    // Cho phép truy cập login page và login API
+    if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+        return NextResponse.next();
     }
 
-    if (!auth) {
-        // Không có auth header → yêu cầu đăng nhập
-        console.log(`⚠️  [Middleware] No auth header → Returning 401`);
-        console.log(`==========================================\n`);
-        return new NextResponse("Authentication required", {
-            status: 401,
-            headers: { "WWW-Authenticate": 'Basic realm="Admin"' },
-        });
-    }
+    // Lấy token từ cookie (ưu tiên) hoặc Authorization: Bearer <token>
+    const token =
+        req.cookies.get("admin_token")?.value ||
+        (req.headers.get("authorization")?.startsWith("Bearer ")
+            ? req.headers.get("authorization")!.slice("Bearer ".length)
+            : null);
 
-    const [scheme, encoded] = auth.split(" ");
-
-    if (scheme === "Basic" && encoded) {
-        try {
-            const decoded = Buffer.from(encoded, "base64").toString("utf8");
-            const [u, p] = decoded.split(":");
-            console.log(`👤 Username from header: ${u}`);
-            console.log(`🔑 Password match: ${p === pass ? "✅" : "❌"}`);
-            if (u === user && p === pass) {
-                console.log(`✅ [Middleware] Auth successful → Allowing access`);
-                console.log(`==========================================\n`);
-                return NextResponse.next();
-            } else {
-                console.log(`❌ [Middleware] Auth failed → Returning 401`);
-            }
-        } catch (error) {
-            console.error("❌ [Middleware] Error decoding auth:", error);
+    if (!token) {
+        // Không có token → redirect về login
+        if (pathname.startsWith("/admin")) {
+            const loginUrl = new URL("/admin/login", req.url);
+            loginUrl.searchParams.set("redirect", pathname);
+            return NextResponse.redirect(loginUrl);
         }
-    } else {
-        console.log(`❌ [Middleware] Invalid auth scheme: ${scheme}`);
+        // API route → trả về 401
+        return NextResponse.json(
+            { error: "Unauthorized - Token required" },
+            { status: 401 }
+        );
     }
 
-    // Auth không hợp lệ → yêu cầu lại
-    console.log(`⚠️  [Middleware] Invalid auth → Returning 401`);
-    console.log(`==========================================\n`);
-    return new NextResponse("Authentication required", {
-        status: 401,
-        headers: { "WWW-Authenticate": 'Basic realm="Admin"' },
-    });
+    // Verify token
+    const payload = await verifyToken(token);
+
+    if (!payload) {
+        // Token không hợp lệ → redirect về login
+        if (pathname.startsWith("/admin")) {
+            const loginUrl = new URL("/admin/login", req.url);
+            loginUrl.searchParams.set("redirect", pathname);
+            loginUrl.searchParams.set("error", "invalid_token");
+            return NextResponse.redirect(loginUrl);
+        }
+        // API route → trả về 401
+        return NextResponse.json(
+            { error: "Unauthorized - Invalid token" },
+            { status: 401 }
+        );
+    }
+
+    // Token hợp lệ → cho phép truy cập
+    return NextResponse.next();
 }
+
