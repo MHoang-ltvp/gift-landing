@@ -134,11 +134,6 @@ export default function Header({ allProducts = [] }: HeaderProps) {
                             setSearchQuery(query);
                             setShowSuggestions(query.trim().length > 0);
                         }}
-                        onFocus={() => {
-                            if (searchQuery.trim().length > 0) {
-                                setShowSuggestions(true);
-                            }
-                        }}
                         style={{
                             width: "100%",
                             padding: `${theme.spacing.sm} ${theme.spacing.md} ${theme.spacing.sm} 40px`,
@@ -153,6 +148,9 @@ export default function Header({ allProducts = [] }: HeaderProps) {
                         onFocus={(e) => {
                             e.currentTarget.style.borderColor = theme.colors.primary;
                             e.currentTarget.style.boxShadow = theme.shadows.sm;
+                            if (searchQuery.trim().length > 0) {
+                                setShowSuggestions(true);
+                            }
                         }}
                         onBlur={(e) => {
                             e.currentTarget.style.borderColor = theme.colors.borderMedium;
