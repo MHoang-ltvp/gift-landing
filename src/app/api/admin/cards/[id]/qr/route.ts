@@ -29,7 +29,7 @@ export async function GET(_: Request, ctx: { params: Promise<{ id: string }> }) 
         const url = `${getBaseUrl()}/c/${card.code}`;
         const png = await makeQrPng(url);
 
-        return new Response(png, {
+        return new Response(new Uint8Array(png), {
             status: 200,
             headers: {
                 "Content-Type": "image/png",
