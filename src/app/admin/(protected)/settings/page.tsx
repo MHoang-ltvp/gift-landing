@@ -86,7 +86,8 @@ export default function SettingsPage() {
         setSettings((prev) => ({
             ...prev,
             googleSheets: {
-                ...prev.googleSheets,
+                enabled: prev.googleSheets?.enabled ?? false,
+                webhookUrl: prev.googleSheets?.webhookUrl ?? "",
                 [field]: value,
             },
         }));
