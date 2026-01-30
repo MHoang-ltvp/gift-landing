@@ -145,12 +145,22 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 </div>
 
                 {/* Top Section - Title */}
-                <div style={{ position: "relative", padding: "20px 20px 0px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
+                <div style={{
+                    position: "relative",
+                    padding: "clamp(12px, 3vw, 20px) clamp(12px, 3vw, 20px) clamp(8px, 2vw, 12px)",
+                    textAlign: "center",
+                    zIndex: 10,
+                    flexShrink: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    minHeight: "clamp(120px, 25vh, 180px)",
+                }}>
                     {/* Decorative hearts */}
-                    <div style={{ position: "absolute", top: 16, left: 20, fontSize: 18, opacity: 0.6 }}>
+                    <div style={{ position: "absolute", top: "clamp(8px, 2vw, 16px)", left: "clamp(12px, 3vw, 20px)", fontSize: "clamp(14px, 3vw, 18px)", opacity: 0.6 }}>
                         <span className="sparkle heartbeat" style={{ animationDelay: "0s" }}>💝</span>
                     </div>
-                    <div style={{ position: "absolute", top: 14, right: 24, fontSize: 16, opacity: 0.5 }}>
+                    <div style={{ position: "absolute", top: "clamp(6px, 1.5vw, 14px)", right: "clamp(12px, 3vw, 24px)", fontSize: "clamp(12px, 2.5vw, 16px)", opacity: 0.5 }}>
                         <span className="sparkle heartbeat" style={{ animationDelay: "0.5s" }}>💘</span>
                     </div>
 
@@ -159,10 +169,10 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         <div
                             className="title-animation pink-shine"
                             style={{
-                                fontSize: "clamp(24px, 3.5vw, 36px)",
+                                fontSize: "clamp(20px, 4.5vw, 36px)",
                                 fontWeight: 400,
-                                letterSpacing: "3px",
-                                marginBottom: 4,
+                                letterSpacing: "clamp(1px, 0.5vw, 3px)",
+                                marginBottom: "clamp(2px, 0.5vw, 4px)",
                                 fontFamily: "'Great Vibes', cursive",
                                 textTransform: "none",
                                 color: "#fff",
@@ -175,13 +185,13 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         <div
                             className="title-animation"
                             style={{
-                                fontSize: "clamp(40px, 6vw, 72px)",
+                                fontSize: "clamp(32px, 7vw, 72px)",
                                 fontWeight: 400,
-                                letterSpacing: "2px",
+                                letterSpacing: "clamp(1px, 0.3vw, 2px)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                gap: 6,
+                                gap: "clamp(4px, 1vw, 6px)",
                                 fontFamily: "'Great Vibes', cursive",
                                 lineHeight: 1.1,
                                 color: "#fff",
@@ -190,7 +200,7 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         >
                             <span>Valentine's</span>
                             <span style={{ fontSize: "0.95em" }}>Day</span>
-                            <span style={{ fontSize: "0.6em", marginLeft: 6, opacity: 0.9 }}>💝</span>
+                            <span style={{ fontSize: "0.6em", marginLeft: "clamp(4px, 1vw, 6px)", opacity: 0.9 }}>💝</span>
                         </div>
                     </div>
                 </div>
@@ -199,9 +209,9 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 {personalImageUrl && (
                     <div style={{
                         position: "relative",
-                        padding: "4px 20px",
-                        marginTop: "-40px",
-                        marginBottom: "20px",
+                        padding: "clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px)",
+                        marginTop: "clamp(-20px, -3vw, -12px)",
+                        marginBottom: "clamp(12px, 2.5vw, 20px)",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
@@ -212,10 +222,10 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             src={personalImageUrl}
                             alt="Personal"
                             style={{
-                                width: "195px",
-                                height: "285px",
+                                width: "clamp(140px, 35vw, 195px)",
+                                height: "clamp(200px, 50vw, 285px)",
                                 objectFit: "cover",
-                                borderRadius: "12px",
+                                borderRadius: "clamp(8px, 2vw, 12px)",
                                 boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                             }}
                             onError={(e) => {
@@ -226,23 +236,31 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 )}
 
                 {/* Bottom Section - Message Box */}
-                <div style={{ flex: 1, position: "relative", padding: "0 20px 20px", minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
+                <div style={{
+                    flex: 1,
+                    position: "relative",
+                    padding: `0 clamp(12px, 3vw, 20px) clamp(12px, 3vw, 20px)`,
+                    minHeight: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start"
+                }}>
                     {/* Message Box - Stamp style với viền răng cưa */}
                     <div
                         style={{
                             background: "linear-gradient(135deg, #fff8f0 0%, #fff5e6 100%)",
-                            borderRadius: 16,
-                            padding: "18px 16px",
+                            borderRadius: "clamp(12px, 2.5vw, 16px)",
+                            padding: "clamp(12px, 2.5vw, 18px) clamp(12px, 2.5vw, 16px)",
                             boxShadow: "0 8px 24px rgba(219, 39, 119, 0.3)",
                             position: "relative",
                             display: "flex",
                             flexDirection: "column",
-                            border: "3px dashed rgba(236, 72, 153, 0.4)",
+                            border: "clamp(2px, 0.5vw, 3px) dashed rgba(236, 72, 153, 0.4)",
                             overflow: "hidden",
                             maxWidth: "92%",
                             margin: "0 auto",
                             width: "100%",
-                            minHeight: "200px",
+                            minHeight: "clamp(150px, 25vh, 200px)",
                             maxHeight: "calc(100% - 20px)",
                         }}
                     >
@@ -272,15 +290,15 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             style={{
                                 background: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
                                 color: "#fff",
-                                padding: "8px 12px",
-                                borderRadius: "8px 8px 0 0",
-                                margin: "-18px -16px 12px -16px",
+                                padding: "clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px)",
+                                borderRadius: "clamp(6px, 1.5vw, 8px) clamp(6px, 1.5vw, 8px) 0 0",
+                                margin: `clamp(-12px, -2.5vw, -18px) clamp(-12px, -2.5vw, -16px) clamp(8px, 2vw, 12px) clamp(-12px, -2.5vw, -16px)`,
                                 textAlign: "center",
                                 fontWeight: 700,
-                                fontSize: "clamp(12px, 1.6vw, 16px)",
-                                letterSpacing: "1px",
+                                fontSize: "clamp(10px, 2.2vw, 16px)",
+                                letterSpacing: "clamp(0.5px, 0.2vw, 1px)",
                                 boxShadow: "0 2px 8px rgba(219, 39, 119, 0.3)",
-                                borderBottom: "2px solid rgba(255, 255, 255, 0.3)",
+                                borderBottom: "clamp(1px, 0.3vw, 2px) solid rgba(255, 255, 255, 0.3)",
                                 position: "relative",
                                 zIndex: 2,
                             }}
@@ -289,17 +307,17 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         </div>
 
                         {/* Content */}
-                        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: 8, height: "100%", minHeight: 0 }}>
+                        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: "clamp(6px, 1.5vw, 8px)", height: "100%", minHeight: 0 }}>
                             {/* Message - Scrollable area */}
                             <div
                                 style={{
                                     flex: 1,
-                                    fontSize: "clamp(10px, 1.3vw, 14px)",
+                                    fontSize: "clamp(11px, 2vw, 14px)",
                                     color: "#7f1d1d",
-                                    lineHeight: 1.6,
+                                    lineHeight: "clamp(1.4, 2vw, 1.6)",
                                     textAlign: "center",
                                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                                    padding: "8px 6px",
+                                    padding: "clamp(6px, 1.5vw, 8px) clamp(4px, 1vw, 6px)",
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     minHeight: 0,
@@ -328,14 +346,19 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             </div>
 
                             {/* Recipient và Sender */}
-                            <div style={{ flexShrink: 0, paddingTop: 6, borderTop: "2px dashed rgba(236, 72, 153, 0.3)", marginTop: 4 }}>
+                            <div style={{
+                                flexShrink: 0,
+                                paddingTop: "clamp(4px, 1vw, 6px)",
+                                borderTop: "clamp(1px, 0.3vw, 2px) dashed rgba(236, 72, 153, 0.3)",
+                                marginTop: "clamp(3px, 0.8vw, 4px)"
+                            }}>
                                 {displayRecipient && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(8px, 1vw, 11px)",
+                                            fontSize: "clamp(9px, 1.5vw, 11px)",
                                             color: "#db2777",
                                             fontWeight: 600,
-                                            marginBottom: 2,
+                                            marginBottom: "clamp(1px, 0.5vw, 2px)",
                                             textAlign: "left",
                                         }}
                                     >
@@ -345,7 +368,7 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                                 {displaySender && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(8px, 1.1vw, 12px)",
+                                            fontSize: "clamp(9px, 1.6vw, 12px)",
                                             color: "#be185d",
                                             textAlign: "right",
                                             fontStyle: "italic",
@@ -474,12 +497,22 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 </div>
 
                 {/* Top Section - Title */}
-                <div style={{ position: "relative", padding: "20px 20px 0px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
+                <div style={{
+                    position: "relative",
+                    padding: "clamp(12px, 3vw, 20px) clamp(12px, 3vw, 20px) clamp(8px, 2vw, 12px)",
+                    textAlign: "center",
+                    zIndex: 10,
+                    flexShrink: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    minHeight: "clamp(120px, 25vh, 180px)",
+                }}>
                     {/* Decorative elements */}
-                    <div style={{ position: "absolute", top: 8, left: 16, fontSize: 18, opacity: 0.6 }}>
+                    <div style={{ position: "absolute", top: "clamp(6px, 1.5vw, 8px)", left: "clamp(12px, 3vw, 16px)", fontSize: "clamp(14px, 3vw, 18px)", opacity: 0.6 }}>
                         <span className="sparkle" style={{ animationDelay: "0s" }}>🧧</span>
                     </div>
-                    <div style={{ position: "absolute", top: 6, right: 20, fontSize: 16, opacity: 0.5 }}>
+                    <div style={{ position: "absolute", top: "clamp(4px, 1vw, 6px)", right: "clamp(12px, 3vw, 20px)", fontSize: "clamp(12px, 2.5vw, 16px)", opacity: 0.5 }}>
                         <span className="sparkle" style={{ animationDelay: "0.5s" }}>🎊</span>
                     </div>
 
@@ -488,9 +521,9 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         <div
                             className="title-animation gold-shine"
                             style={{
-                                fontSize: "clamp(36px, 6vw, 64px)",
+                                fontSize: "clamp(28px, 7vw, 64px)",
                                 fontWeight: 400,
-                                letterSpacing: "4px",
+                                letterSpacing: "clamp(2px, 0.8vw, 4px)",
                                 marginBottom: 0,
                                 fontFamily: "'Great Vibes', cursive",
                                 textTransform: "none",
@@ -501,7 +534,7 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                                 lineHeight: 1.2,
                                 display: "flex",
                                 flexDirection: "column",
-                                gap: 2,
+                                gap: "clamp(1px, 0.5vw, 2px)",
                             }}
                         >
                             <span>Cung Chúc</span>
@@ -514,9 +547,9 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 {personalImageUrl && (
                     <div style={{
                         position: "relative",
-                        padding: "4px 20px",
-                        marginTop: "-28px",
-                        marginBottom: "20px",
+                        padding: "clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px)",
+                        marginTop: "clamp(-20px, -3vw, -12px)",
+                        marginBottom: "clamp(12px, 2.5vw, 20px)",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
@@ -527,10 +560,10 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             src={personalImageUrl}
                             alt="Personal"
                             style={{
-                                width: "195px",
-                                height: "285px",
+                                width: "clamp(140px, 35vw, 195px)",
+                                height: "clamp(200px, 50vw, 285px)",
                                 objectFit: "cover",
-                                borderRadius: "12px",
+                                borderRadius: "clamp(8px, 2vw, 12px)",
                                 boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                             }}
                             onError={(e) => {
@@ -541,13 +574,21 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 )}
 
                 {/* Bottom Section - Message Box */}
-                <div style={{ flex: 1, position: "relative", padding: "0 20px 24px", minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
+                <div style={{
+                    flex: 1,
+                    position: "relative",
+                    padding: `0 clamp(12px, 3vw, 20px) clamp(12px, 3vw, 24px)`,
+                    minHeight: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start"
+                }}>
                     {/* Message Box */}
                     <div
                         style={{
                             background: "linear-gradient(135deg, #fff8e1 0%, #fff5e6 100%)",
-                            borderRadius: 16,
-                            padding: "20px 18px",
+                            borderRadius: "clamp(12px, 2.5vw, 16px)",
+                            padding: "clamp(12px, 2.5vw, 20px) clamp(12px, 2.5vw, 18px)",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
                             position: "relative",
                             display: "flex",
@@ -557,47 +598,47 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             maxWidth: "90%",
                             margin: "0 auto",
                             width: "100%",
-                            minHeight: "220px",
+                            minHeight: "clamp(150px, 25vh, 220px)",
                             maxHeight: "calc(100% - 24px)",
                         }}
                     >
                         {/* Ornate corner decorations */}
-                        <div style={{ position: "absolute", top: 4, left: 4, width: 20, height: 20, borderTop: "3px solid #dc2626", borderLeft: "3px solid #dc2626", borderRadius: "4px 0 0 0" }} />
-                        <div style={{ position: "absolute", top: 4, right: 4, width: 20, height: 20, borderTop: "3px solid #dc2626", borderRight: "3px solid #dc2626", borderRadius: "0 4px 0 0" }} />
-                        <div style={{ position: "absolute", bottom: 4, left: 4, width: 20, height: 20, borderBottom: "3px solid #dc2626", borderLeft: "3px solid #dc2626", borderRadius: "0 0 0 4px" }} />
-                        <div style={{ position: "absolute", bottom: 4, right: 4, width: 20, height: 20, borderBottom: "3px solid #dc2626", borderRight: "3px solid #dc2626", borderRadius: "0 0 4px 0" }} />
+                        <div style={{ position: "absolute", top: "clamp(3px, 0.8vw, 4px)", left: "clamp(3px, 0.8vw, 4px)", width: "clamp(16px, 3vw, 20px)", height: "clamp(16px, 3vw, 20px)", borderTop: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderLeft: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderRadius: "clamp(3px, 0.8vw, 4px) 0 0 0" }} />
+                        <div style={{ position: "absolute", top: "clamp(3px, 0.8vw, 4px)", right: "clamp(3px, 0.8vw, 4px)", width: "clamp(16px, 3vw, 20px)", height: "clamp(16px, 3vw, 20px)", borderTop: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderRight: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderRadius: "0 clamp(3px, 0.8vw, 4px) 0 0" }} />
+                        <div style={{ position: "absolute", bottom: "clamp(3px, 0.8vw, 4px)", left: "clamp(3px, 0.8vw, 4px)", width: "clamp(16px, 3vw, 20px)", height: "clamp(16px, 3vw, 20px)", borderBottom: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderLeft: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderRadius: "0 0 0 clamp(3px, 0.8vw, 4px)" }} />
+                        <div style={{ position: "absolute", bottom: "clamp(3px, 0.8vw, 4px)", right: "clamp(3px, 0.8vw, 4px)", width: "clamp(16px, 3vw, 20px)", height: "clamp(16px, 3vw, 20px)", borderBottom: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderRight: "clamp(2px, 0.5vw, 3px) solid #dc2626", borderRadius: "0 0 clamp(3px, 0.8vw, 4px) 0" }} />
 
                         {/* Red Banner */}
                         <div
                             style={{
                                 background: "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
                                 color: "#fff",
-                                padding: "10px 14px",
-                                borderRadius: "8px 8px 0 0",
-                                margin: "-20px -18px 14px -18px",
+                                padding: "clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 14px)",
+                                borderRadius: "clamp(6px, 1.5vw, 8px) clamp(6px, 1.5vw, 8px) 0 0",
+                                margin: `clamp(-12px, -2.5vw, -20px) clamp(-12px, -2.5vw, -18px) clamp(8px, 2vw, 14px) clamp(-12px, -2.5vw, -18px)`,
                                 textAlign: "center",
                                 fontWeight: 700,
-                                fontSize: "clamp(13px, 1.8vw, 18px)",
-                                letterSpacing: "1.5px",
+                                fontSize: "clamp(11px, 2.5vw, 18px)",
+                                letterSpacing: "clamp(0.8px, 0.3vw, 1.5px)",
                                 boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                                borderBottom: "2px solid #FFD700",
+                                borderBottom: "clamp(1px, 0.3vw, 2px) solid #FFD700",
                             }}
                         >
                             CHÚC MỪNG NĂM MỚI
                         </div>
 
                         {/* Content */}
-                        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: 10, height: "100%", minHeight: 0 }}>
+                        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: "clamp(6px, 1.5vw, 10px)", height: "100%", minHeight: 0 }}>
                             {/* Message - Scrollable area */}
                             <div
                                 style={{
                                     flex: 1,
-                                    fontSize: "clamp(11px, 1.4vw, 15px)",
+                                    fontSize: "clamp(11px, 2vw, 15px)",
                                     color: "#7f1d1d",
-                                    lineHeight: 1.7,
+                                    lineHeight: "clamp(1.5, 2vw, 1.7)",
                                     textAlign: "center",
                                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                                    padding: "10px 8px",
+                                    padding: "clamp(6px, 1.5vw, 10px) clamp(6px, 1.5vw, 8px)",
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     minHeight: 0,
@@ -626,14 +667,19 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             </div>
 
                             {/* Recipient và Sender */}
-                            <div style={{ flexShrink: 0, paddingTop: 6, borderTop: "2px dashed rgba(220, 38, 38, 0.3)", marginTop: 4 }}>
+                            <div style={{
+                                flexShrink: 0,
+                                paddingTop: "clamp(4px, 1vw, 6px)",
+                                borderTop: "clamp(1px, 0.3vw, 2px) dashed rgba(220, 38, 38, 0.3)",
+                                marginTop: "clamp(3px, 0.8vw, 4px)"
+                            }}>
                                 {displayRecipient && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(8px, 1vw, 11px)",
+                                            fontSize: "clamp(9px, 1.5vw, 11px)",
                                             color: "#dc2626",
                                             fontWeight: 600,
-                                            marginBottom: 2,
+                                            marginBottom: "clamp(1px, 0.5vw, 2px)",
                                             textAlign: "left",
                                         }}
                                     >
@@ -643,7 +689,7 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                                 {displaySender && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(7px, 0.9vw, 10px)",
+                                            fontSize: "clamp(9px, 1.6vw, 10px)",
                                             color: "#991b1b",
                                             textAlign: "right",
                                             fontStyle: "italic",
@@ -756,12 +802,22 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 }} />
 
                 {/* Top Section - Title */}
-                <div style={{ position: "relative", padding: "20px 20px 0px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%", marginTop: "-30px" }}>
+                <div style={{
+                    position: "relative",
+                    padding: "clamp(12px, 3vw, 20px) clamp(12px, 3vw, 20px) clamp(8px, 2vw, 12px)",
+                    textAlign: "center",
+                    zIndex: 10,
+                    flexShrink: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    minHeight: "clamp(120px, 25vh, 180px)",
+                }}>
                     {/* Decorative hearts */}
-                    <div style={{ position: "absolute", top: 16, left: 20, fontSize: 18, opacity: 0.6 }}>
+                    <div style={{ position: "absolute", top: "clamp(8px, 2vw, 16px)", left: "clamp(12px, 3vw, 20px)", fontSize: "clamp(14px, 3vw, 18px)", opacity: 0.6 }}>
                         <span className="sparkle" style={{ animationDelay: "0s" }}>💖</span>
                     </div>
-                    <div style={{ position: "absolute", top: 14, right: 24, fontSize: 16, opacity: 0.5 }}>
+                    <div style={{ position: "absolute", top: "clamp(6px, 1.5vw, 14px)", right: "clamp(12px, 3vw, 24px)", fontSize: "clamp(12px, 2.5vw, 16px)", opacity: 0.5 }}>
                         <span className="sparkle" style={{ animationDelay: "0.5s" }}>💕</span>
                     </div>
 
@@ -770,10 +826,10 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         <div
                             className="happy-animation happy-shine"
                             style={{
-                                fontSize: "clamp(24px, 3.5vw, 36px)",
+                                fontSize: "clamp(20px, 4.5vw, 36px)",
                                 fontWeight: 300,
-                                letterSpacing: "3px",
-                                marginBottom: 4,
+                                letterSpacing: "clamp(1px, 0.5vw, 3px)",
+                                marginBottom: "clamp(2px, 0.5vw, 4px)",
                                 fontFamily: "'Great Vibes', cursive",
                                 textTransform: "none",
                                 color: "#fff",
@@ -786,13 +842,13 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         <div
                             className="womensday-animation"
                             style={{
-                                fontSize: "clamp(40px, 6vw, 72px)",
+                                fontSize: "clamp(32px, 7vw, 72px)",
                                 fontWeight: 400,
-                                letterSpacing: "2px",
+                                letterSpacing: "clamp(1px, 0.3vw, 2px)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                gap: 6,
+                                gap: "clamp(4px, 1vw, 6px)",
                                 fontFamily: "'Great Vibes', cursive",
                                 lineHeight: 1.1,
                                 color: "#fff",
@@ -801,7 +857,7 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         >
                             <span>Women's</span>
                             <span style={{ fontSize: "0.95em" }}>Day</span>
-                            <span style={{ fontSize: "0.6em", marginLeft: 6, opacity: 0.9 }}>💐</span>
+                            <span style={{ fontSize: "0.6em", marginLeft: "clamp(4px, 1vw, 6px)", opacity: 0.9 }}>💐</span>
                         </div>
                     </div>
                 </div>
@@ -810,9 +866,9 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 {personalImageUrl && (
                     <div style={{
                         position: "relative",
-                        padding: "4px 20px",
-                        marginTop: "-40px",
-                        marginBottom: "20px",
+                        padding: "clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px)",
+                        marginTop: "clamp(-20px, -3vw, -12px)",
+                        marginBottom: "clamp(12px, 2.5vw, 20px)",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
@@ -823,10 +879,10 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             src={personalImageUrl}
                             alt="Personal"
                             style={{
-                                width: "200px",
-                                height: "280px",
+                                width: "clamp(140px, 35vw, 200px)",
+                                height: "clamp(200px, 50vw, 280px)",
                                 objectFit: "cover",
-                                borderRadius: "12px",
+                                borderRadius: "clamp(8px, 2vw, 12px)",
                                 boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                             }}
                             onError={(e) => {
@@ -837,23 +893,31 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                 )}
 
                 {/* Bottom Section - Message Box */}
-                <div style={{ flex: 1, position: "relative", padding: "0 20px 20px", minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
+                <div style={{
+                    flex: 1,
+                    position: "relative",
+                    padding: `0 clamp(12px, 3vw, 20px) clamp(12px, 3vw, 20px)`,
+                    minHeight: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start"
+                }}>
                     {/* Message Box với grid pattern */}
                     <div
                         style={{
                             background: "linear-gradient(135deg, #ffe5e5 0%, #fff5f5 100%)",
-                            borderRadius: 16,
-                            padding: "18px 16px",
+                            borderRadius: "clamp(12px, 2.5vw, 16px)",
+                            padding: "clamp(12px, 2.5vw, 18px) clamp(12px, 2.5vw, 16px)",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
                             position: "relative",
                             display: "flex",
                             flexDirection: "column",
-                            border: "2px solid rgba(255, 255, 255, 0.6)",
+                            border: "clamp(1px, 0.3vw, 2px) solid rgba(255, 255, 255, 0.6)",
                             overflow: "hidden",
                             maxWidth: "92%",
                             margin: "0 auto",
                             width: "100%",
-                            minHeight: "200px",
+                            minHeight: "clamp(150px, 25vh, 200px)",
                             maxHeight: "calc(100% - 20px)",
                         }}
                     >
@@ -899,26 +963,26 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                         </div>
 
                         {/* Content */}
-                        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: 8, height: "100%", minHeight: 0 }}>
+                        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: "clamp(6px, 1.5vw, 8px)", height: "100%", minHeight: 0 }}>
                             {/* Title trong message box */}
-                            <div style={{ textAlign: "center", flexShrink: 0, marginBottom: 4 }}>
+                            <div style={{ textAlign: "center", flexShrink: 0, marginBottom: "clamp(3px, 0.8vw, 4px)" }}>
                                 <div
                                     style={{
-                                        fontSize: "clamp(12px, 1.6vw, 16px)",
+                                        fontSize: "clamp(10px, 2.2vw, 16px)",
                                         fontWeight: 700,
                                         color: "#dc2626",
-                                        letterSpacing: "0.5px",
-                                        marginBottom: 3,
+                                        letterSpacing: "clamp(0.3px, 0.1vw, 0.5px)",
+                                        marginBottom: "clamp(2px, 0.5vw, 3px)",
                                     }}
                                 >
                                     MỪNG NGÀY QUỐC TẾ PHỤ NỮ
                                 </div>
                                 <div
                                     style={{
-                                        fontSize: "clamp(14px, 2vw, 20px)",
+                                        fontSize: "clamp(12px, 2.8vw, 20px)",
                                         fontWeight: 700,
                                         color: "#dc2626",
-                                        letterSpacing: "1.5px",
+                                        letterSpacing: "clamp(1px, 0.3vw, 1.5px)",
                                     }}
                                 >
                                     08.03
@@ -929,12 +993,12 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             <div
                                 style={{
                                     flex: 1,
-                                    fontSize: "clamp(10px, 1.3vw, 14px)",
+                                    fontSize: "clamp(11px, 2vw, 14px)",
                                     color: "#7f1d1d",
-                                    lineHeight: 1.6,
+                                    lineHeight: "clamp(1.4, 2vw, 1.6)",
                                     textAlign: "center",
                                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                                    padding: "8px 6px",
+                                    padding: "clamp(6px, 1.5vw, 8px) clamp(4px, 1vw, 6px)",
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     minHeight: 0,
@@ -963,14 +1027,19 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                             </div>
 
                             {/* Recipient và Sender */}
-                            <div style={{ flexShrink: 0, paddingTop: 6, borderTop: "2px dashed rgba(220, 38, 38, 0.3)", marginTop: 4 }}>
+                            <div style={{
+                                flexShrink: 0,
+                                paddingTop: "clamp(4px, 1vw, 6px)",
+                                borderTop: "clamp(1px, 0.3vw, 2px) dashed rgba(220, 38, 38, 0.3)",
+                                marginTop: "clamp(3px, 0.8vw, 4px)"
+                            }}>
                                 {displayRecipient && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(8px, 1vw, 11px)",
+                                            fontSize: "clamp(9px, 1.5vw, 11px)",
                                             color: "#dc2626",
                                             fontWeight: 600,
-                                            marginBottom: 2,
+                                            marginBottom: "clamp(1px, 0.5vw, 2px)",
                                             textAlign: "left",
                                         }}
                                     >
@@ -980,7 +1049,7 @@ export default function CardPreview({ occasion, recipient, sender, message, pers
                                 {displaySender && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(7px, 0.9vw, 10px)",
+                                            fontSize: "clamp(9px, 1.6vw, 10px)",
                                             color: "#991b1b",
                                             textAlign: "right",
                                             fontStyle: "italic",

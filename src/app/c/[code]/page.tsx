@@ -20,7 +20,7 @@ export default async function CardPage({ params }: { params: Promise<{ code: str
         <main
             style={{
                 minHeight: "100vh",
-                padding: 24,
+                padding: "clamp(12px, 3vw, 24px)",
                 fontFamily: "'Be Vietnam Pro', sans-serif",
                 background: "linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%)",
                 display: "flex",
@@ -38,10 +38,10 @@ export default async function CardPage({ params }: { params: Promise<{ code: str
                 <div
                     style={{
                         aspectRatio: "3/4",
-                        borderRadius: 24,
+                        borderRadius: "clamp(16px, 4vw, 24px)",
                         overflow: "hidden",
                         boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-                        maxWidth: 600,
+                        maxWidth: "min(600px, 95vw)",
                         margin: "0 auto",
                     }}
                 >
