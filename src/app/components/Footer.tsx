@@ -6,7 +6,7 @@ import type { Settings } from "@/types";
 
 export default function Footer() {
     const [isVisible, setIsVisible] = useState(false);
-    const [settings, setSettings] = useState<Settings["socialLinks"] | null>(null);
+    const [settings, setSettings] = useState<Settings | null>(null);
     const footerRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
@@ -31,32 +31,37 @@ export default function Footer() {
     }, []);
 
     useEffect(() => {
-        // Load settings for social links
+        // Load settings
         fetch("/api/admin/settings")
             .then((res) => res.json())
             .then((data) => {
-                if (data.socialLinks) {
-                    setSettings(data.socialLinks);
-                }
+                setSettings(data);
             })
             .catch((error) => {
                 console.error("Error loading settings:", error);
                 // Use default settings on error
                 setSettings({
-                    instagram: { enabled: true, url: "#" },
-                    facebook: { enabled: true, url: "#" },
-                    youtube: { enabled: true, url: "#" },
-                    tiktok: { enabled: true, url: "#" },
+                    contactInfo: {
+                        hotline: "0968118025",
+                        email: "goighem2026@gmail.com",
+                    },
+                    addresses: [
+                        "81 Bà Triệu, Hai Bà Trưng",
+                        "241 Chùa Bộc, Đống Đa",
+                        "60 Trần Đại Nghĩa, Hai Bà Trưng",
+                        "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
+                        "157 Xuân Thủy, Cầu Giấy",
+                    ],
+                    socialLinks: {
+                        instagram: { enabled: true, url: "#" },
+                        facebook: { enabled: true, url: "#" },
+                        youtube: { enabled: true, url: "#" },
+                        tiktok: { enabled: true, url: "#" },
+                    },
+                    updatedAt: new Date().toISOString(),
                 });
             });
     }, []);
-    const hanoiAddresses = [
-        "81 Bà Triệu, Hai Bà Trưng",
-        "241 Chùa Bộc, Đống Đa",
-        "60 Trần Đại Nghĩa, Hai Bà Trưng",
-        "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
-        "157 Xuân Thủy, Cầu Giấy",
-    ];
 
     const SocialIcon = ({ children, name }: { children: React.ReactNode; name: string }) => (
         <div style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -71,9 +76,9 @@ export default function Footer() {
         url: string;
     };
 
-    const socialLinks: SocialLink[] = settings
+    const socialLinks: SocialLink[] = settings?.socialLinks
         ? ([] as SocialLink[]).concat(
-              settings.instagram?.enabled
+              settings.socialLinks.instagram?.enabled
                   ? [
                       {
                           name: "Instagram",
@@ -84,11 +89,11 @@ export default function Footer() {
                                   </svg>
                               </SocialIcon>
                           ),
-                          url: settings.instagram.url || "#",
+                          url: settings.socialLinks.instagram.url || "#",
                       },
                   ]
                   : [],
-              settings.facebook?.enabled
+              settings.socialLinks.facebook?.enabled
                   ? [
                       {
                           name: "Facebook",
@@ -99,11 +104,11 @@ export default function Footer() {
                                   </svg>
                               </SocialIcon>
                           ),
-                          url: settings.facebook.url || "#",
+                          url: settings.socialLinks.facebook.url || "#",
                       },
                   ]
                   : [],
-              settings.youtube?.enabled
+              settings.socialLinks.youtube?.enabled
                   ? [
                       {
                           name: "YouTube",
@@ -114,11 +119,11 @@ export default function Footer() {
                                   </svg>
                               </SocialIcon>
                           ),
-                          url: settings.youtube.url || "#",
+                          url: settings.socialLinks.youtube.url || "#",
                       },
                   ]
                   : [],
-              settings.tiktok?.enabled
+              settings.socialLinks.tiktok?.enabled
                   ? [
                       {
                           name: "TikTok",
@@ -129,7 +134,7 @@ export default function Footer() {
                                   </svg>
                               </SocialIcon>
                           ),
-                          url: settings.tiktok.url || "#",
+                          url: settings.socialLinks.tiktok.url || "#",
                       },
                   ]
                   : []
@@ -185,59 +190,68 @@ export default function Footer() {
                             Liên hệ
                         </h3>
                         <div style={{ display: "flex", flexDirection: "column", gap: theme.spacing.md }}>
-                            {[
-                                { label: "Hotline", value: "0968118025" },
-                                { label: "Email", value: "goighem2026@gmail.com" },
-                            ].map((item, index) => (
-                                <div key={index} style={{ display: "flex", flexDirection: "column", gap: theme.spacing.xs }}>
-                                    <div style={{ fontSize: theme.typography.fontSize.sm, opacity: 0.9, fontFamily: theme.typography.fontFamily.body }}>
-                                        {item.label}
+                            {settings?.contactInfo && (
+                                <>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: theme.spacing.xs }}>
+                                        <div style={{ fontSize: theme.typography.fontSize.sm, opacity: 0.9, fontFamily: theme.typography.fontFamily.body }}>
+                                            Hotline
+                                        </div>
+                                        <div style={{ fontSize: theme.typography.fontSize.md, fontWeight: theme.typography.fontWeight.medium, fontFamily: theme.typography.fontFamily.body }}>
+                                            {settings.contactInfo.hotline || "0968118025"}
+                                        </div>
                                     </div>
-                                    <div style={{ fontSize: theme.typography.fontSize.md, fontWeight: theme.typography.fontWeight.medium, fontFamily: theme.typography.fontFamily.body }}>
-                                        {item.value}
+                                    <div style={{ display: "flex", flexDirection: "column", gap: theme.spacing.xs }}>
+                                        <div style={{ fontSize: theme.typography.fontSize.sm, opacity: 0.9, fontFamily: theme.typography.fontFamily.body }}>
+                                            Email
+                                        </div>
+                                        <div style={{ fontSize: theme.typography.fontSize.md, fontWeight: theme.typography.fontWeight.medium, fontFamily: theme.typography.fontFamily.body }}>
+                                            {settings.contactInfo.email || "goighem2026@gmail.com"}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                </>
+                            )}
                         </div>
                     </div>
 
                     {/* Store Locations - Hà Nội */}
-                    <div>
-                        <h3
-                            style={{
-                                fontSize: theme.typography.fontSize.lg,
-                                fontWeight: theme.typography.fontWeight.semibold,
-                                marginBottom: theme.spacing.md,
-                                fontFamily: theme.typography.fontFamily.body,
-                            }}
-                        >
-                            HÀ NỘI (9h - 22h)
-                        </h3>
-                        <ul
-                            style={{
-                                listStyle: "none",
-                                padding: 0,
-                                margin: 0,
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: theme.spacing.sm,
-                            }}
-                        >
-                            {hanoiAddresses.map((address, index) => (
-                                <li
-                                    key={index}
-                                    style={{
-                                        fontSize: theme.typography.fontSize.sm,
-                                        lineHeight: 1.6,
-                                        opacity: 0.9,
-                                        fontFamily: theme.typography.fontFamily.body,
-                                    }}
-                                >
-                                    • {address}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {settings?.addresses && settings.addresses.length > 0 && (
+                        <div>
+                            <h3
+                                style={{
+                                    fontSize: theme.typography.fontSize.lg,
+                                    fontWeight: theme.typography.fontWeight.semibold,
+                                    marginBottom: theme.spacing.md,
+                                    fontFamily: theme.typography.fontFamily.body,
+                                }}
+                            >
+                                HÀ NỘI (9h - 22h)
+                            </h3>
+                            <ul
+                                style={{
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: theme.spacing.sm,
+                                }}
+                            >
+                                {settings.addresses.map((address, index) => (
+                                    <li
+                                        key={index}
+                                        style={{
+                                            fontSize: theme.typography.fontSize.sm,
+                                            lineHeight: 1.6,
+                                            opacity: 0.9,
+                                            fontFamily: theme.typography.fontFamily.body,
+                                        }}
+                                    >
+                                        • {address}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
 
                     {/* Brand and Social Media */}
                     <div>
@@ -267,7 +281,7 @@ export default function Footer() {
                             <p style={{ fontSize: theme.typography.fontSize.sm, marginBottom: theme.spacing.md, opacity: 0.9, fontFamily: theme.typography.fontFamily.body }}>
                                 Hãy kết nối với chúng mình
                             </p>
-                            {socialLinks.length > 0 && (
+                            {socialLinks && socialLinks.length > 0 && (
                                 <div
                                     style={{
                                         display: "flex",

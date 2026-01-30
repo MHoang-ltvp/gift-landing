@@ -117,188 +117,188 @@ export default function ProductSection({ occasion, products, label }: ProductSec
                 }}
                 className={isVisible ? "section-fade-in" : ""}
             >
-            <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
-                {/* Section Header */}
-                <div style={{ marginBottom: theme.spacing.xl }}>
-                    <div style={{ marginBottom: theme.spacing.sm }}>
-                        {/* Title */}
-                        <h2
+                <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
+                    {/* Section Header */}
+                    <div style={{ marginBottom: theme.spacing.xl }}>
+                        <div style={{ marginBottom: theme.spacing.sm }}>
+                            {/* Title */}
+                            <h2
+                                className={isVisible ? "title-slide-in" : ""}
+                                style={{
+                                    margin: 0,
+                                    marginLeft: 0,
+                                    marginBottom: theme.spacing.xs,
+                                    paddingLeft: 0,
+                                    fontSize: "clamp(36px, 5vw, 56px)",
+                                    fontWeight: theme.typography.fontWeight.bold,
+                                    color: theme.colors.textPrimary,
+                                    fontFamily: theme.typography.fontFamily.display,
+                                    userSelect: "none",
+                                    WebkitUserSelect: "none",
+                                }}
+                            >
+                                {label}
+                            </h2>
+                        </div>
+                        {/* Tagline - không thụt vào, ra ngoài */}
+                        <p
                             className={isVisible ? "title-slide-in" : ""}
                             style={{
                                 margin: 0,
-                                marginLeft: 0,
-                                marginBottom: theme.spacing.xs,
                                 paddingLeft: 0,
-                                fontSize: "clamp(36px, 5vw, 56px)",
-                                fontWeight: theme.typography.fontWeight.bold,
-                                color: theme.colors.textPrimary,
-                                fontFamily: theme.typography.fontFamily.display,
+                                fontSize: "clamp(16px, 2vw, 20px)",
+                                color: theme.colors.textSecondary,
+                                fontFamily: theme.typography.fontFamily.body,
                                 userSelect: "none",
                                 WebkitUserSelect: "none",
+                                animationDelay: "0.2s",
                             }}
                         >
-                            {label}
-                        </h2>
+                            {config.tagline}
+                        </p>
                     </div>
-                    {/* Tagline - không thụt vào, ra ngoài */}
-                    <p
-                        className={isVisible ? "title-slide-in" : ""}
-                        style={{
-                            margin: 0,
-                            paddingLeft: 0,
-                            fontSize: "clamp(16px, 2vw, 20px)",
-                            color: theme.colors.textSecondary,
-                            fontFamily: theme.typography.fontFamily.body,
-                            userSelect: "none",
-                            WebkitUserSelect: "none",
-                            animationDelay: "0.2s",
-                        }}
-                    >
-                        {config.tagline}
-                    </p>
-                </div>
 
-                {/* Products Carousel */}
-                {products.length === 0 ? (
-                    <div
-                        style={{
-                            padding: `${theme.spacing.xxxl} ${theme.spacing.lg}`,
-                            textAlign: "center",
-                            color: theme.colors.textTertiary,
-                            fontSize: theme.typography.fontSize.md,
-                            backgroundColor: theme.colors.bgGray,
-                            borderRadius: theme.borderRadius.lg,
-                            border: `2px dashed ${theme.colors.borderMedium}`,
-                        }}
-                    >
-                        Chưa có sản phẩm nào trong danh mục này
-                    </div>
-                ) : (
-                    <div style={{ position: "relative" }}>
-                        {/* Navigation Arrows */}
-                        <button
-                            onClick={() => scrollCarousel(-1)}
-                            style={{
-                                position: "absolute",
-                                left: -48,
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                width: 48,
-                                height: 48,
-                                borderRadius: "50%",
-                                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
-                                border: "none",
-                                color: theme.colors.textWhite,
-                                fontSize: theme.typography.fontSize["2xl"],
-                                cursor: "pointer",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                boxShadow: theme.shadows.lg,
-                                zIndex: 10,
-                                transition: theme.transitions.normal,
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                                e.currentTarget.style.boxShadow = theme.shadows.xl;
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-                                e.currentTarget.style.boxShadow = theme.shadows.lg;
-                            }}
-                            onMouseDown={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(0.95)";
-                            }}
-                            onMouseUp={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                            }}
-                            aria-label="Scroll left"
-                        >
-                            ❮
-                        </button>
-                        <button
-                            onClick={() => scrollCarousel(1)}
-                            style={{
-                                position: "absolute",
-                                right: -48,
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                width: 48,
-                                height: 48,
-                                borderRadius: "50%",
-                                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
-                                border: "none",
-                                color: theme.colors.textWhite,
-                                fontSize: theme.typography.fontSize["2xl"],
-                                cursor: "pointer",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                boxShadow: theme.shadows.lg,
-                                zIndex: 10,
-                                transition: theme.transitions.normal,
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                                e.currentTarget.style.boxShadow = theme.shadows.xl;
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-                                e.currentTarget.style.boxShadow = theme.shadows.lg;
-                            }}
-                            onMouseDown={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(0.95)";
-                            }}
-                            onMouseUp={(e) => {
-                                e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                            }}
-                            aria-label="Scroll right"
-                        >
-                            ❯
-                        </button>
-
-                        {/* Products Container */}
+                    {/* Products Carousel */}
+                    {products.length === 0 ? (
                         <div
-                            ref={carouselRef}
                             style={{
-                                display: "flex",
-                                gap: theme.spacing.lg,
-                                overflowX: "auto",
-                                overflowY: "hidden",
-                                scrollBehavior: "smooth",
-                                scrollbarWidth: "none", // Firefox
-                                msOverflowStyle: "none", // IE/Edge
-                                paddingBottom: theme.spacing.md,
+                                padding: `${theme.spacing.xxxl} ${theme.spacing.lg}`,
+                                textAlign: "center",
+                                color: theme.colors.textTertiary,
+                                fontSize: theme.typography.fontSize.md,
+                                backgroundColor: theme.colors.bgGray,
+                                borderRadius: theme.borderRadius.lg,
+                                border: `2px dashed ${theme.colors.borderMedium}`,
                             }}
                         >
-                            <style dangerouslySetInnerHTML={{
-                                __html: `
+                            Chưa có sản phẩm nào trong danh mục này
+                        </div>
+                    ) : (
+                        <div style={{ position: "relative" }}>
+                            {/* Navigation Arrows */}
+                            <button
+                                onClick={() => scrollCarousel(-1)}
+                                style={{
+                                    position: "absolute",
+                                    left: -48,
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    width: 48,
+                                    height: 48,
+                                    borderRadius: "50%",
+                                    background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
+                                    border: "none",
+                                    color: theme.colors.textWhite,
+                                    fontSize: theme.typography.fontSize["2xl"],
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    boxShadow: theme.shadows.lg,
+                                    zIndex: 10,
+                                    transition: theme.transitions.normal,
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                                    e.currentTarget.style.boxShadow = theme.shadows.xl;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                                    e.currentTarget.style.boxShadow = theme.shadows.lg;
+                                }}
+                                onMouseDown={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(0.95)";
+                                }}
+                                onMouseUp={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                                }}
+                                aria-label="Scroll left"
+                            >
+                                ❮
+                            </button>
+                            <button
+                                onClick={() => scrollCarousel(1)}
+                                style={{
+                                    position: "absolute",
+                                    right: -48,
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    width: 48,
+                                    height: 48,
+                                    borderRadius: "50%",
+                                    background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
+                                    border: "none",
+                                    color: theme.colors.textWhite,
+                                    fontSize: theme.typography.fontSize["2xl"],
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    boxShadow: theme.shadows.lg,
+                                    zIndex: 10,
+                                    transition: theme.transitions.normal,
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                                    e.currentTarget.style.boxShadow = theme.shadows.xl;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                                    e.currentTarget.style.boxShadow = theme.shadows.lg;
+                                }}
+                                onMouseDown={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(0.95)";
+                                }}
+                                onMouseUp={(e) => {
+                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                                }}
+                                aria-label="Scroll right"
+                            >
+                                ❯
+                            </button>
+
+                            {/* Products Container */}
+                            <div
+                                ref={carouselRef}
+                                style={{
+                                    display: "flex",
+                                    gap: theme.spacing.lg,
+                                    overflowX: "auto",
+                                    overflowY: "hidden",
+                                    scrollBehavior: "smooth",
+                                    scrollbarWidth: "none", // Firefox
+                                    msOverflowStyle: "none", // IE/Edge
+                                    paddingBottom: theme.spacing.md,
+                                }}
+                            >
+                                <style dangerouslySetInnerHTML={{
+                                    __html: `
                                     div[style*="overflow-x: auto"]::-webkit-scrollbar {
                                         display: none; /* Chrome/Safari */
                                     }
                                 `
-                            }} />
-                            {products.map((product, index) => (
-                                <div
-                                    key={product._id}
-                                    className={isVisible ? "card-animate" : ""}
-                                    style={{
-                                        flex: "0 0 calc(25% - 18px)",
-                                        minWidth: 280,
-                                        animationDelay: `${0.3 + index * 0.1}s`,
-                                    }}
-                                >
-                                    <ProductCard product={product} priority={index < 4} />
-                                </div>
-                            ))}
+                                }} />
+                                {products.map((product, index) => (
+                                    <div
+                                        key={product._id}
+                                        className={isVisible ? "card-animate" : ""}
+                                        style={{
+                                            flex: "0 0 calc(25% - 18px)",
+                                            minWidth: 280,
+                                            animationDelay: `${0.3 + index * 0.1}s`,
+                                        }}
+                                    >
+                                        <ProductCard product={product} priority={index < 4} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
 
-            {/* Responsive styles */}
-            <style dangerouslySetInnerHTML={{
-                __html: `
+                {/* Responsive styles */}
+                <style dangerouslySetInnerHTML={{
+                    __html: `
                     @media (max-width: 1280px) {
                         div[style*="flex: 0 0 calc(25%"] {
                             flex: 0 0 calc(33.333% - 16px) !important;
@@ -319,8 +319,8 @@ export default function ProductSection({ occasion, products, label }: ProductSec
                         }
                     }
                 `
-            }} />
-        </section>
+                }} />
+            </section>
         </>
     );
 }

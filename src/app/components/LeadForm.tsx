@@ -236,7 +236,7 @@ export default function LeadForm() {
                     >
                         {[
                             { name: "name", label: "Tên", type: "text", placeholder: "Nhập tên của bạn", required: false },
-                            { name: "phone", label: "Số điện thoại *", type: "tel", placeholder: "Ví dụ: 0968118025 hoặc +84968118025", required: true },
+                            { name: "phone", label: "Số điện thoại *", type: "tel", placeholder: "0123456789 hoặc +84123456789", required: true },
                             { name: "email", label: "Email *", type: "email", placeholder: "Ví dụ: example@gmail.com", required: true },
                         ].map((field) => (
                             <div key={field.name} style={{ marginBottom: theme.spacing.md }}>

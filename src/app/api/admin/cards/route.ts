@@ -57,6 +57,8 @@ export async function POST(req: Request) {
 
   if (template) card.template = template;
   if (occasion) card.occasion = occasion;
+  if (body.personalImageUrl) card.personalImageUrl = body.personalImageUrl.toString().trim();
+  if (body.qrImageUrl) card.qrImageUrl = body.qrImageUrl.toString().trim();
 
   const r = await db.collection("cards").insertOne(card);
 

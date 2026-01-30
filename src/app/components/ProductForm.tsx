@@ -3,7 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ProductForm() {
+interface ProductFormProps {
+    onSuccess?: () => void;
+}
+
+export default function ProductForm({ onSuccess }: ProductFormProps) {
     const router = useRouter();
     const formRef = useRef<HTMLFormElement>(null);
     const [loading, setLoading] = useState(false);
@@ -141,10 +145,17 @@ export default function ProductForm() {
             // Hiển thị thông báo thành công
             setMessage({ type: "success", text: "✅ Tạo sản phẩm thành công!" });
 
-            // Refresh page sau 2 giây để hiển thị sản phẩm mới
-            setTimeout(() => {
-                router.refresh();
-            }, 2000);
+            // Call onSuccess callback if provided (for modal)
+            if (onSuccess) {
+                setTimeout(() => {
+                    onSuccess();
+                }, 1500);
+            } else {
+                // Refresh page sau 2 giây để hiển thị sản phẩm mới (for non-modal usage)
+                setTimeout(() => {
+                    router.refresh();
+                }, 2000);
+            }
         } catch (error) {
             console.error("Error creating product:", error);
             setMessage({
@@ -369,7 +380,7 @@ export default function ProductForm() {
 
                 {/* Preview */}
                 {preview && (
-                    <div style={{ marginTop: 12 }}>
+                    <div style={{ marginTop: 12, position: "relative", display: "inline-block" }}>
                         <img
                             src={preview}
                             alt="Preview"
@@ -384,6 +395,36 @@ export default function ProductForm() {
                                 border: "1px solid #ddd",
                             }}
                         />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setPreview(null);
+                                const fileInput = document.querySelector('input[name="image"]') as HTMLInputElement;
+                                const urlInput = document.querySelector('input[name="imageUrl"]') as HTMLInputElement;
+                                if (fileInput) fileInput.value = "";
+                                if (urlInput) urlInput.value = "";
+                            }}
+                            style={{
+                                position: "absolute",
+                                top: "8px",
+                                right: "8px",
+                                width: "28px",
+                                height: "28px",
+                                borderRadius: "50%",
+                                backgroundColor: "#EF4444",
+                                color: "#ffffff",
+                                border: "none",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "16px",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                            }}
+                            title="Xóa ảnh"
+                        >
+                            ×
+                        </button>
                     </div>
                 )}
             </div>

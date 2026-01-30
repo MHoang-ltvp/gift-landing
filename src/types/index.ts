@@ -32,11 +32,20 @@ export type Card = {
         fromName?: string;
         message?: string;
     };
+    personalImageUrl?: string; // URL ảnh cá nhân (ảnh dọc) hiển thị trong thiệp
+    qrImageUrl?: string; // URL ảnh QR code từ Canva
     createdAt: string;
 };
 
 export type Settings = {
     _id?: string;
+    // Contact Information
+    contactInfo?: {
+        hotline: string;
+        email: string;
+    };
+    // Addresses (Hà Nội)
+    addresses?: string[]; // Mỗi string là một địa chỉ, sẽ hiển thị với bullet point
     // Social Media Links
     socialLinks: {
         instagram?: {

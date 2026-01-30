@@ -10,6 +10,17 @@ export async function GET() {
     if (!settings) {
         // Return default settings
         return Response.json({
+            contactInfo: {
+                hotline: "0968118025",
+                email: "goighem2026@gmail.com",
+            },
+            addresses: [
+                "81 Bà Triệu, Hai Bà Trưng",
+                "241 Chùa Bộc, Đống Đa",
+                "60 Trần Đại Nghĩa, Hai Bà Trưng",
+                "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
+                "157 Xuân Thủy, Cầu Giấy",
+            ],
             socialLinks: {
                 instagram: { enabled: true, url: "#" },
                 facebook: { enabled: true, url: "#" },
@@ -74,7 +85,32 @@ export async function PUT(req: Request) {
             );
         }
 
+        // Validate Contact Info
+        const contactInfo = body.contactInfo || {};
+        const validatedContactInfo: Settings["contactInfo"] = {
+            hotline: contactInfo.hotline?.toString().trim() || "0968118025",
+            email: contactInfo.email?.toString().trim() || "goighem2026@gmail.com",
+        };
+
+        // Validate Email format
+        if (validatedContactInfo.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(validatedContactInfo.email)) {
+            return Response.json(
+                { error: "Email không đúng định dạng" },
+                { status: 400 }
+            );
+        }
+
+        // Validate Addresses
+        const addresses = body.addresses || [];
+        const validatedAddresses: string[] = Array.isArray(addresses)
+            ? addresses
+                .map((addr: any) => addr?.toString().trim())
+                .filter((addr: string) => addr && addr.length > 0)
+            : [];
+
         const settings: Omit<Settings, "_id"> = {
+            contactInfo: validatedContactInfo,
+            addresses: validatedAddresses,
             socialLinks: validatedSocialLinks,
             googleSheets: validatedGoogleSheets,
             updatedAt: new Date().toISOString(),

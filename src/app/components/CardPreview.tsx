@@ -7,6 +7,7 @@ interface CardPreviewProps {
     recipient: string;
     sender: string;
     message: string;
+    personalImageUrl?: string; // URL ảnh cá nhân (ảnh dọc) hiển thị trong thiệp
 }
 
 const themes = {
@@ -33,7 +34,7 @@ const themes = {
     },
 };
 
-export default function CardPreview({ occasion, recipient, sender, message }: CardPreviewProps) {
+export default function CardPreview({ occasion, recipient, sender, message, personalImageUrl }: CardPreviewProps) {
     const theme = themes[occasion];
     const displayRecipient = recipient || "Người thân yêu";
     const displaySender = sender || "Người gửi";
@@ -48,7 +49,7 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                     height: "100%",
                     background: "linear-gradient(135deg, #fce7f3 0%, #fbcfe8 30%, #f9a8d4 60%, #f472b6 100%)",
                     position: "relative",
-                    overflow: "hidden",
+                    overflow: "auto",
                     borderRadius: 16,
                     display: "flex",
                     flexDirection: "column",
@@ -144,7 +145,7 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                 </div>
 
                 {/* Top Section - Title */}
-                <div style={{ position: "relative", padding: "20px 20px 12px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
+                <div style={{ position: "relative", padding: "20px 20px 0px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
                     {/* Decorative hearts */}
                     <div style={{ position: "absolute", top: 16, left: 20, fontSize: 18, opacity: 0.6 }}>
                         <span className="sparkle heartbeat" style={{ animationDelay: "0s" }}>💝</span>
@@ -155,12 +156,12 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
 
                     {/* Title */}
                     <div style={{ color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                        <div 
+                        <div
                             className="title-animation pink-shine"
-                            style={{ 
-                                fontSize: "clamp(24px, 3.5vw, 36px)", 
-                                fontWeight: 400, 
-                                letterSpacing: "3px", 
+                            style={{
+                                fontSize: "clamp(24px, 3.5vw, 36px)",
+                                fontWeight: 400,
+                                letterSpacing: "3px",
                                 marginBottom: 4,
                                 fontFamily: "'Great Vibes', cursive",
                                 textTransform: "none",
@@ -171,15 +172,15 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                         >
                             Happy
                         </div>
-                        <div 
+                        <div
                             className="title-animation"
-                            style={{ 
-                                fontSize: "clamp(40px, 6vw, 72px)", 
-                                fontWeight: 400, 
-                                letterSpacing: "2px", 
-                                display: "flex", 
-                                alignItems: "center", 
-                                justifyContent: "center", 
+                            style={{
+                                fontSize: "clamp(40px, 6vw, 72px)",
+                                fontWeight: 400,
+                                letterSpacing: "2px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                                 gap: 6,
                                 fontFamily: "'Great Vibes', cursive",
                                 lineHeight: 1.1,
@@ -193,6 +194,36 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                         </div>
                     </div>
                 </div>
+
+                {/* Personal Image Section - Between Title and Message Box */}
+                {personalImageUrl && (
+                    <div style={{
+                        position: "relative",
+                        padding: "4px 20px",
+                        marginTop: "-40px",
+                        marginBottom: "20px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexShrink: 0,
+                        zIndex: 5,
+                    }}>
+                        <img
+                            src={personalImageUrl}
+                            alt="Personal"
+                            style={{
+                                width: "195px",
+                                height: "285px",
+                                objectFit: "cover",
+                                borderRadius: "12px",
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                            }}
+                            onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                            }}
+                        />
+                    </div>
+                )}
 
                 {/* Bottom Section - Message Box */}
                 <div style={{ flex: 1, position: "relative", padding: "0 20px 20px", minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
@@ -297,24 +328,24 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                             </div>
 
                             {/* Recipient và Sender */}
-                            <div style={{ flexShrink: 0, paddingTop: 8, borderTop: "2px dashed rgba(236, 72, 153, 0.3)", marginTop: 4 }}>
+                            <div style={{ flexShrink: 0, paddingTop: 6, borderTop: "2px dashed rgba(236, 72, 153, 0.3)", marginTop: 4 }}>
                                 {displayRecipient && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(10px, 1.3vw, 14px)",
+                                            fontSize: "clamp(8px, 1vw, 11px)",
                                             color: "#db2777",
                                             fontWeight: 600,
-                                            marginBottom: 3,
+                                            marginBottom: 2,
                                             textAlign: "left",
                                         }}
                                     >
-                                        Gửi đến: <span style={{ fontFamily: "'Dancing Script', cursive", fontSize: "1.15em", fontStyle: "italic" }}>{displayRecipient}</span>
+                                        Gửi đến: <span style={{ fontFamily: "'Dancing Script', cursive", fontSize: "1.1em", fontStyle: "italic" }}>{displayRecipient}</span>
                                     </div>
                                 )}
                                 {displaySender && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(9px, 1.1vw, 12px)",
+                                            fontSize: "clamp(8px, 1.1vw, 12px)",
                                             color: "#be185d",
                                             textAlign: "right",
                                             fontStyle: "italic",
@@ -348,7 +379,7 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                     height: "100%",
                     background: "linear-gradient(180deg, #1e3a8a 0%, #312e81 30%, #7c2d12 60%, #991b1b 100%)",
                     position: "relative",
-                    overflow: "hidden",
+                    overflow: "auto",
                     borderRadius: 16,
                     display: "flex",
                     flexDirection: "column",
@@ -443,7 +474,7 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                 </div>
 
                 {/* Top Section - Title */}
-                <div style={{ position: "relative", padding: "20px 20px 12px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
+                <div style={{ position: "relative", padding: "20px 20px 0px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
                     {/* Decorative elements */}
                     <div style={{ position: "absolute", top: 8, left: 16, fontSize: 18, opacity: 0.6 }}>
                         <span className="sparkle" style={{ animationDelay: "0s" }}>🧧</span>
@@ -454,12 +485,12 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
 
                     {/* Title */}
                     <div style={{ color: "#FFD700", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
-                        <div 
+                        <div
                             className="title-animation gold-shine"
-                            style={{ 
-                                fontSize: "clamp(36px, 6vw, 64px)", 
-                                fontWeight: 400, 
-                                letterSpacing: "4px", 
+                            style={{
+                                fontSize: "clamp(36px, 6vw, 64px)",
+                                fontWeight: 400,
+                                letterSpacing: "4px",
                                 marginBottom: 0,
                                 fontFamily: "'Great Vibes', cursive",
                                 textTransform: "none",
@@ -478,6 +509,36 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                         </div>
                     </div>
                 </div>
+
+                {/* Personal Image Section - Between Title and Message Box */}
+                {personalImageUrl && (
+                    <div style={{
+                        position: "relative",
+                        padding: "4px 20px",
+                        marginTop: "-28px",
+                        marginBottom: "20px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexShrink: 0,
+                        zIndex: 5,
+                    }}>
+                        <img
+                            src={personalImageUrl}
+                            alt="Personal"
+                            style={{
+                                width: "195px",
+                                height: "285px",
+                                objectFit: "cover",
+                                borderRadius: "12px",
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                            }}
+                            onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                            }}
+                        />
+                    </div>
+                )}
 
                 {/* Bottom Section - Message Box */}
                 <div style={{ flex: 1, position: "relative", padding: "0 20px 24px", minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
@@ -565,24 +626,24 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                             </div>
 
                             {/* Recipient và Sender */}
-                            <div style={{ flexShrink: 0, paddingTop: 8, borderTop: "2px dashed rgba(220, 38, 38, 0.3)", marginTop: 4 }}>
+                            <div style={{ flexShrink: 0, paddingTop: 6, borderTop: "2px dashed rgba(220, 38, 38, 0.3)", marginTop: 4 }}>
                                 {displayRecipient && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(10px, 1.3vw, 14px)",
+                                            fontSize: "clamp(8px, 1vw, 11px)",
                                             color: "#dc2626",
                                             fontWeight: 600,
-                                            marginBottom: 3,
+                                            marginBottom: 2,
                                             textAlign: "left",
                                         }}
                                     >
-                                        Gửi đến: <span style={{ fontFamily: "'Dancing Script', cursive", fontSize: "1.15em", fontStyle: "italic" }}>{displayRecipient}</span>
+                                        Gửi đến: <span style={{ fontFamily: "'Dancing Script', cursive", fontSize: "1.1em", fontStyle: "italic" }}>{displayRecipient}</span>
                                     </div>
                                 )}
                                 {displaySender && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(9px, 1.1vw, 12px)",
+                                            fontSize: "clamp(7px, 0.9vw, 10px)",
                                             color: "#991b1b",
                                             textAlign: "right",
                                             fontStyle: "italic",
@@ -616,7 +677,7 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                     height: "100%",
                     background: theme.gradient,
                     position: "relative",
-                    overflow: "hidden",
+                    overflow: "auto",
                     borderRadius: 16,
                     display: "flex",
                     flexDirection: "column",
@@ -695,7 +756,7 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                 }} />
 
                 {/* Top Section - Title */}
-                <div style={{ position: "relative", padding: "20px 20px 12px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%" }}>
+                <div style={{ position: "relative", padding: "20px 20px 0px", textAlign: "center", zIndex: 10, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "30%", marginTop: "-30px" }}>
                     {/* Decorative hearts */}
                     <div style={{ position: "absolute", top: 16, left: 20, fontSize: 18, opacity: 0.6 }}>
                         <span className="sparkle" style={{ animationDelay: "0s" }}>💖</span>
@@ -706,12 +767,12 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
 
                     {/* Title */}
                     <div style={{ color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                        <div 
+                        <div
                             className="happy-animation happy-shine"
-                            style={{ 
-                                fontSize: "clamp(24px, 3.5vw, 36px)", 
-                                fontWeight: 400, 
-                                letterSpacing: "3px", 
+                            style={{
+                                fontSize: "clamp(24px, 3.5vw, 36px)",
+                                fontWeight: 300,
+                                letterSpacing: "3px",
                                 marginBottom: 4,
                                 fontFamily: "'Great Vibes', cursive",
                                 textTransform: "none",
@@ -722,15 +783,15 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                         >
                             Happy
                         </div>
-                        <div 
+                        <div
                             className="womensday-animation"
-                            style={{ 
-                                fontSize: "clamp(40px, 6vw, 72px)", 
-                                fontWeight: 400, 
-                                letterSpacing: "2px", 
-                                display: "flex", 
-                                alignItems: "center", 
-                                justifyContent: "center", 
+                            style={{
+                                fontSize: "clamp(40px, 6vw, 72px)",
+                                fontWeight: 400,
+                                letterSpacing: "2px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                                 gap: 6,
                                 fontFamily: "'Great Vibes', cursive",
                                 lineHeight: 1.1,
@@ -744,6 +805,36 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                         </div>
                     </div>
                 </div>
+
+                {/* Personal Image Section - Between Title and Message Box */}
+                {personalImageUrl && (
+                    <div style={{
+                        position: "relative",
+                        padding: "4px 20px",
+                        marginTop: "-40px",
+                        marginBottom: "20px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexShrink: 0,
+                        zIndex: 5,
+                    }}>
+                        <img
+                            src={personalImageUrl}
+                            alt="Personal"
+                            style={{
+                                width: "200px",
+                                height: "280px",
+                                objectFit: "cover",
+                                borderRadius: "12px",
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                            }}
+                            onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                            }}
+                        />
+                    </div>
+                )}
 
                 {/* Bottom Section - Message Box */}
                 <div style={{ flex: 1, position: "relative", padding: "0 20px 20px", minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
@@ -872,24 +963,24 @@ export default function CardPreview({ occasion, recipient, sender, message }: Ca
                             </div>
 
                             {/* Recipient và Sender */}
-                            <div style={{ flexShrink: 0, paddingTop: 8, borderTop: "2px dashed rgba(220, 38, 38, 0.3)", marginTop: 4 }}>
+                            <div style={{ flexShrink: 0, paddingTop: 6, borderTop: "2px dashed rgba(220, 38, 38, 0.3)", marginTop: 4 }}>
                                 {displayRecipient && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(10px, 1.3vw, 14px)",
+                                            fontSize: "clamp(8px, 1vw, 11px)",
                                             color: "#dc2626",
                                             fontWeight: 600,
-                                            marginBottom: 3,
+                                            marginBottom: 2,
                                             textAlign: "left",
                                         }}
                                     >
-                                        Gửi đến: <span style={{ fontFamily: "'Dancing Script', cursive", fontSize: "1.15em", fontStyle: "italic" }}>{displayRecipient}</span>
+                                        Gửi đến: <span style={{ fontFamily: "'Dancing Script', cursive", fontSize: "1.1em", fontStyle: "italic" }}>{displayRecipient}</span>
                                     </div>
                                 )}
                                 {displaySender && (
                                     <div
                                         style={{
-                                            fontSize: "clamp(9px, 1.1vw, 12px)",
+                                            fontSize: "clamp(7px, 0.9vw, 10px)",
                                             color: "#991b1b",
                                             textAlign: "right",
                                             fontStyle: "italic",

@@ -9,6 +9,17 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState<Settings>({
+        contactInfo: {
+            hotline: "0968118025",
+            email: "goighem2026@gmail.com",
+        },
+        addresses: [
+            "81 Bà Triệu, Hai Bà Trưng",
+            "241 Chùa Bộc, Đống Đa",
+            "60 Trần Đại Nghĩa, Hai Bà Trưng",
+            "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
+            "157 Xuân Thủy, Cầu Giấy",
+        ],
         socialLinks: {
             instagram: { enabled: true, url: "#" },
             facebook: { enabled: true, url: "#" },
@@ -33,7 +44,27 @@ export default function SettingsPage() {
             if (res.ok) {
                 const data = await res.json();
                 setSettings({
-                    ...data,
+                    contactInfo: data.contactInfo || {
+                        hotline: "0968118025",
+                        email: "goighem2026@gmail.com",
+                    },
+                    addresses: data.addresses || [
+                        "81 Bà Triệu, Hai Bà Trưng",
+                        "241 Chùa Bộc, Đống Đa",
+                        "60 Trần Đại Nghĩa, Hai Bà Trưng",
+                        "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
+                        "157 Xuân Thủy, Cầu Giấy",
+                    ],
+                    socialLinks: data.socialLinks || {
+                        instagram: { enabled: true, url: "#" },
+                        facebook: { enabled: true, url: "#" },
+                        youtube: { enabled: true, url: "#" },
+                        tiktok: { enabled: true, url: "#" },
+                    },
+                    googleSheets: {
+                        enabled: data.googleSheets?.enabled ?? false,
+                        webhookUrl: data.googleSheets?.webhookUrl ?? "",
+                    },
                     updatedAt: data.updatedAt || new Date().toISOString(),
                 });
             }
@@ -95,11 +126,11 @@ export default function SettingsPage() {
 
     if (loading) {
         return (
-            <main style={{ padding: 24, fontFamily: theme.typography.fontFamily.body, backgroundColor: theme.colors.bgPrimary, minHeight: "100vh" }}>
+            <div style={{ fontFamily: theme.typography.fontFamily.body }}>
                 <div style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center", padding: theme.spacing.xxxl }}>
                     <p style={{ color: theme.colors.textSecondary }}>Đang tải...</p>
                 </div>
-            </main>
+            </div>
         );
     }
 
@@ -116,22 +147,10 @@ export default function SettingsPage() {
     ];
 
     return (
-        <main style={{ padding: 24, fontFamily: theme.typography.fontFamily.body, backgroundColor: theme.colors.bgPrimary, minHeight: "100vh" }}>
+        <div style={{ fontFamily: theme.typography.fontFamily.body }}>
             <div style={{ maxWidth: 1000, margin: "0 auto" }}>
                 {/* Header */}
                 <div style={{ marginBottom: 24 }}>
-                    <a
-                        href="/admin"
-                        style={{
-                            color: theme.colors.primary,
-                            textDecoration: "none",
-                            fontSize: theme.typography.fontSize.sm,
-                            marginBottom: 16,
-                            display: "inline-block",
-                        }}
-                    >
-                        ← Về Admin
-                    </a>
                     <h1
                         style={{
                             fontSize: theme.typography.fontSize["4xl"],
@@ -143,6 +162,267 @@ export default function SettingsPage() {
                     >
                         ⚙️ Cài Đặt Hệ Thống
                     </h1>
+                </div>
+
+                {/* Contact Information Section */}
+                <div
+                    style={{
+                        backgroundColor: theme.colors.bgWhite,
+                        borderRadius: theme.borderRadius.xl,
+                        boxShadow: theme.shadows.lg,
+                        padding: theme.spacing.xl,
+                        marginBottom: theme.spacing.xl,
+                    }}
+                >
+                    <h2
+                        style={{
+                            fontSize: theme.typography.fontSize.xl,
+                            fontWeight: theme.typography.fontWeight.bold,
+                            color: theme.colors.textPrimary,
+                            marginBottom: theme.spacing.lg,
+                            fontFamily: theme.typography.fontFamily.display,
+                        }}
+                    >
+                        📞 Thông Tin Liên Hệ
+                    </h2>
+                    <p
+                        style={{
+                            fontSize: theme.typography.fontSize.sm,
+                            color: theme.colors.textSecondary,
+                            marginBottom: theme.spacing.lg,
+                        }}
+                    >
+                        Cấu hình thông tin liên hệ hiển thị trên footer.
+                    </p>
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: theme.spacing.lg }}>
+                        <div>
+                            <label
+                                style={{
+                                    display: "block",
+                                    fontSize: theme.typography.fontSize.sm,
+                                    fontWeight: theme.typography.fontWeight.semibold,
+                                    color: theme.colors.textPrimary,
+                                    marginBottom: theme.spacing.sm,
+                                }}
+                            >
+                                Hotline
+                            </label>
+                            <input
+                                type="tel"
+                                value={settings.contactInfo?.hotline || ""}
+                                onChange={(e) =>
+                                    setSettings((prev) => ({
+                                        ...prev,
+                                        contactInfo: {
+                                            ...prev.contactInfo,
+                                            hotline: e.target.value,
+                                            email: prev.contactInfo?.email || "goighem2026@gmail.com",
+                                        },
+                                    }))
+                                }
+                                placeholder="0968118025"
+                                style={{
+                                    width: "100%",
+                                    padding: theme.spacing.md,
+                                    borderRadius: theme.borderRadius.md,
+                                    border: `2px solid ${theme.colors.borderMedium}`,
+                                    fontSize: theme.typography.fontSize.md,
+                                    outline: "none",
+                                    fontFamily: theme.typography.fontFamily.body,
+                                }}
+                                onFocus={(e) => {
+                                    e.currentTarget.style.borderColor = theme.colors.primary;
+                                    e.currentTarget.style.boxShadow = theme.shadows.sm;
+                                }}
+                                onBlur={(e) => {
+                                    e.currentTarget.style.borderColor = theme.colors.borderMedium;
+                                    e.currentTarget.style.boxShadow = "none";
+                                }}
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                style={{
+                                    display: "block",
+                                    fontSize: theme.typography.fontSize.sm,
+                                    fontWeight: theme.typography.fontWeight.semibold,
+                                    color: theme.colors.textPrimary,
+                                    marginBottom: theme.spacing.sm,
+                                }}
+                            >
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                value={settings.contactInfo?.email || ""}
+                                onChange={(e) =>
+                                    setSettings((prev) => ({
+                                        ...prev,
+                                        contactInfo: {
+                                            ...prev.contactInfo,
+                                            hotline: prev.contactInfo?.hotline || "0968118025",
+                                            email: e.target.value,
+                                        },
+                                    }))
+                                }
+                                placeholder="goighem2026@gmail.com"
+                                style={{
+                                    width: "100%",
+                                    padding: theme.spacing.md,
+                                    borderRadius: theme.borderRadius.md,
+                                    border: `2px solid ${theme.colors.borderMedium}`,
+                                    fontSize: theme.typography.fontSize.md,
+                                    outline: "none",
+                                    fontFamily: theme.typography.fontFamily.body,
+                                }}
+                                onFocus={(e) => {
+                                    e.currentTarget.style.borderColor = theme.colors.primary;
+                                    e.currentTarget.style.boxShadow = theme.shadows.sm;
+                                }}
+                                onBlur={(e) => {
+                                    e.currentTarget.style.borderColor = theme.colors.borderMedium;
+                                    e.currentTarget.style.boxShadow = "none";
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Addresses Section */}
+                <div
+                    style={{
+                        backgroundColor: theme.colors.bgWhite,
+                        borderRadius: theme.borderRadius.xl,
+                        boxShadow: theme.shadows.lg,
+                        padding: theme.spacing.xl,
+                        marginBottom: theme.spacing.xl,
+                    }}
+                >
+                    <h2
+                        style={{
+                            fontSize: theme.typography.fontSize.xl,
+                            fontWeight: theme.typography.fontWeight.bold,
+                            color: theme.colors.textPrimary,
+                            marginBottom: theme.spacing.lg,
+                            fontFamily: theme.typography.fontFamily.display,
+                        }}
+                    >
+                        📍 Địa Chỉ Hà Nội
+                    </h2>
+                    <p
+                        style={{
+                            fontSize: theme.typography.fontSize.sm,
+                            color: theme.colors.textSecondary,
+                            marginBottom: theme.spacing.lg,
+                        }}
+                    >
+                        Quản lý danh sách địa chỉ cửa hàng tại Hà Nội. Mỗi dòng sẽ hiển thị với bullet point (•) trên footer.
+                    </p>
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: theme.spacing.md }}>
+                        {(settings.addresses || []).map((address, index) => (
+                            <div key={index} style={{ display: "flex", gap: theme.spacing.sm, alignItems: "center" }}>
+                                <input
+                                    type="text"
+                                    value={address}
+                                    onChange={(e) => {
+                                        const newAddresses = [...(settings.addresses || [])];
+                                        newAddresses[index] = e.target.value;
+                                        setSettings((prev) => ({
+                                            ...prev,
+                                            addresses: newAddresses,
+                                        }));
+                                    }}
+                                    placeholder="Nhập địa chỉ..."
+                                    style={{
+                                        flex: 1,
+                                        padding: theme.spacing.md,
+                                        borderRadius: theme.borderRadius.md,
+                                        border: `2px solid ${theme.colors.borderMedium}`,
+                                        fontSize: theme.typography.fontSize.md,
+                                        outline: "none",
+                                        fontFamily: theme.typography.fontFamily.body,
+                                    }}
+                                    onFocus={(e) => {
+                                        e.currentTarget.style.borderColor = theme.colors.primary;
+                                        e.currentTarget.style.boxShadow = theme.shadows.sm;
+                                    }}
+                                    onBlur={(e) => {
+                                        e.currentTarget.style.borderColor = theme.colors.borderMedium;
+                                        e.currentTarget.style.boxShadow = "none";
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const newAddresses = (settings.addresses || []).filter((_, i) => i !== index);
+                                        setSettings((prev) => ({
+                                            ...prev,
+                                            addresses: newAddresses,
+                                        }));
+                                    }}
+                                    style={{
+                                        padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                                        backgroundColor: theme.colors.error,
+                                        color: theme.colors.textWhite,
+                                        border: "none",
+                                        borderRadius: theme.borderRadius.md,
+                                        cursor: "pointer",
+                                        fontSize: theme.typography.fontSize.sm,
+                                        fontWeight: theme.typography.fontWeight.semibold,
+                                        transition: theme.transitions.normal,
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = "#c62828";
+                                        e.currentTarget.style.transform = "scale(1.05)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = theme.colors.error;
+                                        e.currentTarget.style.transform = "scale(1)";
+                                    }}
+                                >
+                                    Xóa
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setSettings((prev) => ({
+                                    ...prev,
+                                    addresses: [...(prev.addresses || []), ""],
+                                }));
+                            }}
+                            style={{
+                                padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+                                backgroundColor: theme.colors.primary,
+                                color: theme.colors.textWhite,
+                                border: "none",
+                                borderRadius: theme.borderRadius.md,
+                                cursor: "pointer",
+                                fontSize: theme.typography.fontSize.md,
+                                fontWeight: theme.typography.fontWeight.semibold,
+                                transition: theme.transitions.normal,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: theme.spacing.sm,
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = theme.colors.primaryDark;
+                                e.currentTarget.style.transform = "scale(1.02)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = theme.colors.primary;
+                                e.currentTarget.style.transform = "scale(1)";
+                            }}
+                        >
+                            <span>+</span>
+                            <span>Thêm Địa Chỉ</span>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Social Media Links Section */}
@@ -413,7 +693,7 @@ export default function SettingsPage() {
                     </button>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }
 

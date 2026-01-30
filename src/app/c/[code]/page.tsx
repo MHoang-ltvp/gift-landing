@@ -50,6 +50,7 @@ export default async function CardPage({ params }: { params: Promise<{ code: str
                         recipient={payload.toName || ""}
                         sender={payload.fromName || ""}
                         message={payload.message || ""}
+                        personalImageUrl={cardData.personalImageUrl}
                     />
                 </div>
             </div>
