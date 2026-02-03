@@ -37,17 +37,13 @@ export async function POST(req: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Upload to Cloudinary
+        // Upload to Cloudinary (chỉ folder + resource_type; transformation dùng khi hiển thị URL)
         const uploadResult = await new Promise((resolve, reject) => {
             cloudinary.uploader
                 .upload_stream(
                     {
                         folder: "goighem/products",
                         resource_type: "image",
-                        transformation: [
-                            { width: 800, height: 800, crop: "limit" },
-                            { quality: "auto" },
-                        ],
                     },
                     (error, result) => {
                         if (error) reject(error);
@@ -64,10 +60,16 @@ export async function POST(req: NextRequest) {
             url: result.secure_url,
             public_id: result.public_id,
         });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("Upload error:", error);
+        const message =
+            error instanceof Error
+                ? error.message
+                : typeof (error as { message?: string })?.message === "string"
+                  ? (error as { message: string }).message
+                  : "Upload failed";
         return Response.json(
-            { error: error instanceof Error ? error.message : "Upload failed" },
+            { error: message },
             { status: 500 }
         );
     }

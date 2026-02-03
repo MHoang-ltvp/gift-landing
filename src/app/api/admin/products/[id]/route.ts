@@ -68,6 +68,10 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
             updateData.occasion = body.occasion?.toString().trim() || "tet";
         }
 
+        if (body.subCategory !== undefined) {
+            updateData.subCategory = body.subCategory?.toString().trim() || null;
+        }
+
         if (Object.keys(updateData).length === 0) {
             return Response.json({ error: "No valid fields to update" }, { status: 400 });
         }

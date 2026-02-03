@@ -28,6 +28,7 @@ async function getProducts(occasion?: Occasion) {
         image: product.image,
         images: product.images,
         occasion: product.occasion,
+        subCategory: product.subCategory,
         active: product.active,
         createdAt: product.createdAt,
     })) as Product[];

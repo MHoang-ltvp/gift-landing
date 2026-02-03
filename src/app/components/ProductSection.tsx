@@ -2,7 +2,9 @@
 
 import { useRef, useEffect, useState } from "react";
 import type { Product, Occasion } from "@/types";
+import { SUB_CATEGORIES_BY_OCCASION } from "@/types";
 import ProductCard from "./ProductCard";
+import ProductDetailModal from "./ProductDetailModal";
 import { theme } from "@/lib/theme";
 
 interface ProductSectionProps {
@@ -11,7 +13,6 @@ interface ProductSectionProps {
     label: string;
 }
 
-// Tagline cho từng occasion
 const occasionConfig: Record<Occasion, { tagline: string }> = {
     tet: {
         tagline: "Đón Tết sum vầy với những bộ quà sang trọng",
@@ -25,86 +26,45 @@ const occasionConfig: Record<Occasion, { tagline: string }> = {
 };
 
 export default function ProductSection({ occasion, products, label }: ProductSectionProps) {
-    const carouselRef = useRef<HTMLDivElement>(null);
     const [isVisible, setIsVisible] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const sectionRef = useRef<HTMLElement>(null);
     const config = occasionConfig[occasion];
+    const subCategories = SUB_CATEGORIES_BY_OCCASION[occasion];
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsVisible(true);
-                }
+                if (entry.isIntersecting) setIsVisible(true);
             },
             { threshold: 0.1 }
         );
-
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current);
-        }
-
+        if (sectionRef.current) observer.observe(sectionRef.current);
         return () => {
-            if (sectionRef.current) {
-                observer.unobserve(sectionRef.current);
-            }
+            if (sectionRef.current) observer.unobserve(sectionRef.current);
         };
     }, []);
-
-    const scrollCarousel = (direction: number) => {
-        if (carouselRef.current) {
-            const scrollAmount = carouselRef.current.children[0]?.clientWidth || 300;
-            carouselRef.current.scrollBy({
-                left: direction * scrollAmount,
-                behavior: "smooth",
-            });
-        }
-    };
 
     return (
         <>
             <style dangerouslySetInnerHTML={{
                 __html: `
                     @keyframes fadeInUp {
-                        from {
-                            opacity: 0;
-                            transform: translateY(50px);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateY(0);
-                        }
+                        from { opacity: 0; transform: translateY(50px); }
+                        to { opacity: 1; transform: translateY(0); }
                     }
                     @keyframes slideInLeft {
-                        from {
-                            opacity: 0;
-                            transform: translateX(-30px);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateX(0);
-                        }
+                        from { opacity: 0; transform: translateX(-30px); }
+                        to { opacity: 1; transform: translateX(0); }
                     }
                     @keyframes cardSlideIn {
-                        from {
-                            opacity: 0;
-                            transform: translateY(30px) scale(0.95);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateY(0) scale(1);
-                        }
+                        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+                        to { opacity: 1; transform: translateY(0) scale(1); }
                     }
-                    .section-fade-in {
-                        animation: fadeInUp 0.8s ease-out forwards;
-                    }
-                    .title-slide-in {
-                        animation: slideInLeft 0.8s ease-out forwards;
-                    }
-                    .card-animate {
-                        animation: cardSlideIn 0.6s ease-out forwards;
-                        opacity: 0;
-                    }
+                    .section-fade-in { animation: fadeInUp 0.8s ease-out forwards; }
+                    .title-slide-in { animation: slideInLeft 0.8s ease-out forwards; }
+                    .card-animate { animation: cardSlideIn 0.6s ease-out forwards; opacity: 0; }
+                    .category-row::-webkit-scrollbar { display: none; }
                 `
             }} />
             <section
@@ -117,52 +77,121 @@ export default function ProductSection({ occasion, products, label }: ProductSec
                 }}
                 className={isVisible ? "section-fade-in" : ""}
             >
-                <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
-                    {/* Section Header */}
-                    <div style={{ marginBottom: theme.spacing.xl }}>
-                        <div style={{ marginBottom: theme.spacing.sm }}>
-                            {/* Title */}
-                            <h2
-                                className={isVisible ? "title-slide-in" : ""}
-                                style={{
-                                    margin: 0,
-                                    marginLeft: 0,
-                                    marginBottom: theme.spacing.xs,
-                                    paddingLeft: 0,
-                                    fontSize: "clamp(36px, 5vw, 56px)",
-                                    fontWeight: theme.typography.fontWeight.bold,
-                                    color: theme.colors.textPrimary,
-                                    fontFamily: theme.typography.fontFamily.display,
-                                    userSelect: "none",
-                                    WebkitUserSelect: "none",
-                                }}
-                            >
-                                {label}
-                            </h2>
-                        </div>
-                        {/* Tagline - không thụt vào, ra ngoài */}
+                <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+                    {/* Header: Danh mục Tết + tagline / ... */}
+                    <div style={{ marginBottom: theme.spacing.xxl }}>
+                        <h2
+                            className={isVisible ? "title-slide-in" : ""}
+                            style={{
+                                margin: 0,
+                                marginBottom: theme.spacing.xs,
+                                fontSize: "clamp(36px, 5vw, 56px)",
+                                fontWeight: theme.typography.fontWeight.bold,
+                                color: theme.colors.textPrimary,
+                                fontFamily: theme.typography.fontFamily.display,
+                            }}
+                        >
+                            {label}
+                        </h2>
                         <p
                             className={isVisible ? "title-slide-in" : ""}
                             style={{
                                 margin: 0,
-                                paddingLeft: 0,
                                 fontSize: "clamp(16px, 2vw, 20px)",
                                 color: theme.colors.textSecondary,
                                 fontFamily: theme.typography.fontFamily.body,
-                                userSelect: "none",
-                                WebkitUserSelect: "none",
-                                animationDelay: "0.2s",
+                                animationDelay: "0.1s",
                             }}
                         >
                             {config.tagline}
                         </p>
                     </div>
 
-                    {/* Products Carousel */}
-                    {products.length === 0 ? (
+                    {/* Dưới Danh mục Tết: lần lượt Mã Đáo (sản phẩm Mã Đáo) → Kim Lộc (sản phẩm Kim Lộc) → Khởi Vận → An Khang. Tương tự cho Valentine và 8/3. */}
+                    {subCategories.map((sub, blockIndex) => {
+                        const blockProducts = products.filter((p) => (p.subCategory || "") === sub.value);
+
+                        return (
+                            <div
+                                key={sub.value}
+                                className={isVisible ? "title-slide-in" : ""}
+                                style={{
+                                    marginBottom: theme.spacing.xxl,
+                                    animationDelay: `${0.15 + blockIndex * 0.05}s`,
+                                }}
+                            >
+                                {/* Tên nhóm: Mã Đáo, Kim Lộc, ... */}
+                                <h3
+                                    style={{
+                                        margin: 0,
+                                        marginBottom: theme.spacing.lg,
+                                        fontSize: "clamp(20px, 2.5vw, 28px)",
+                                        fontWeight: theme.typography.fontWeight.semibold,
+                                        color: theme.colors.textPrimary,
+                                        fontFamily: theme.typography.fontFamily.body,
+                                    }}
+                                >
+                                    {sub.label}
+                                </h3>
+                                {/* Hàng sản phẩm của nhóm này; nếu không có thì hiển thị thông báo */}
+                                {blockProducts.length === 0 ? (
+                                    <div
+                                        style={{
+                                            padding: theme.spacing.xl,
+                                            textAlign: "center",
+                                            color: theme.colors.textTertiary,
+                                            fontSize: theme.typography.fontSize.sm,
+                                            backgroundColor: theme.colors.bgGray,
+                                            borderRadius: theme.borderRadius.lg,
+                                            border: `1px dashed ${theme.colors.borderMedium}`,
+                                        }}
+                                    >
+                                        Chưa có sản phẩm trong nhóm {sub.label}
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="category-row"
+                                        style={{
+                                            display: "flex",
+                                            gap: theme.spacing.lg,
+                                            overflowX: "auto",
+                                            overflowY: "hidden",
+                                            scrollBehavior: "smooth",
+                                            scrollbarWidth: "none",
+                                            msOverflowStyle: "none",
+                                            paddingBottom: theme.spacing.md,
+                                        }}
+                                    >
+                                        {blockProducts.map((product, index) => (
+                                            <div
+                                                key={product._id}
+                                                className={isVisible ? "card-animate" : ""}
+                                                style={{
+                                                    flex: "0 0 280px",
+                                                    width: 280,
+                                                    minWidth: 280,
+                                                    animationDelay: `${0.2 + index * 0.08}s`,
+                                                }}
+                                            >
+                                                <ProductCard
+                                                    product={product}
+                                                    variant="block"
+                                                    priority={index < 3}
+                                                    onClick={(p) => setSelectedProduct(p)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+
+                    {/* Khi không có sản phẩm nào trong danh mục */}
+                    {products.length === 0 && (
                         <div
                             style={{
-                                padding: `${theme.spacing.xxxl} ${theme.spacing.lg}`,
+                                padding: theme.spacing.xxxl,
                                 textAlign: "center",
                                 color: theme.colors.textTertiary,
                                 fontSize: theme.typography.fontSize.md,
@@ -173,154 +202,17 @@ export default function ProductSection({ occasion, products, label }: ProductSec
                         >
                             Chưa có sản phẩm nào trong danh mục này
                         </div>
-                    ) : (
-                        <div style={{ position: "relative" }}>
-                            {/* Navigation Arrows */}
-                            <button
-                                onClick={() => scrollCarousel(-1)}
-                                style={{
-                                    position: "absolute",
-                                    left: -48,
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    width: 48,
-                                    height: 48,
-                                    borderRadius: "50%",
-                                    background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
-                                    border: "none",
-                                    color: theme.colors.textWhite,
-                                    fontSize: theme.typography.fontSize["2xl"],
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    boxShadow: theme.shadows.lg,
-                                    zIndex: 10,
-                                    transition: theme.transitions.normal,
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                                    e.currentTarget.style.boxShadow = theme.shadows.xl;
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-                                    e.currentTarget.style.boxShadow = theme.shadows.lg;
-                                }}
-                                onMouseDown={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(0.95)";
-                                }}
-                                onMouseUp={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                                }}
-                                aria-label="Scroll left"
-                            >
-                                ❮
-                            </button>
-                            <button
-                                onClick={() => scrollCarousel(1)}
-                                style={{
-                                    position: "absolute",
-                                    right: -48,
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    width: 48,
-                                    height: 48,
-                                    borderRadius: "50%",
-                                    background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
-                                    border: "none",
-                                    color: theme.colors.textWhite,
-                                    fontSize: theme.typography.fontSize["2xl"],
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    boxShadow: theme.shadows.lg,
-                                    zIndex: 10,
-                                    transition: theme.transitions.normal,
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                                    e.currentTarget.style.boxShadow = theme.shadows.xl;
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-                                    e.currentTarget.style.boxShadow = theme.shadows.lg;
-                                }}
-                                onMouseDown={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(0.95)";
-                                }}
-                                onMouseUp={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-                                }}
-                                aria-label="Scroll right"
-                            >
-                                ❯
-                            </button>
-
-                            {/* Products Container */}
-                            <div
-                                ref={carouselRef}
-                                style={{
-                                    display: "flex",
-                                    gap: theme.spacing.lg,
-                                    overflowX: "auto",
-                                    overflowY: "hidden",
-                                    scrollBehavior: "smooth",
-                                    scrollbarWidth: "none", // Firefox
-                                    msOverflowStyle: "none", // IE/Edge
-                                    paddingBottom: theme.spacing.md,
-                                }}
-                            >
-                                <style dangerouslySetInnerHTML={{
-                                    __html: `
-                                    div[style*="overflow-x: auto"]::-webkit-scrollbar {
-                                        display: none; /* Chrome/Safari */
-                                    }
-                                `
-                                }} />
-                                {products.map((product, index) => (
-                                    <div
-                                        key={product._id}
-                                        className={isVisible ? "card-animate" : ""}
-                                        style={{
-                                            flex: "0 0 calc(25% - 18px)",
-                                            minWidth: 280,
-                                            animationDelay: `${0.3 + index * 0.1}s`,
-                                        }}
-                                    >
-                                        <ProductCard product={product} priority={index < 4} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
                     )}
                 </div>
-
-                {/* Responsive styles */}
-                <style dangerouslySetInnerHTML={{
-                    __html: `
-                    @media (max-width: 1280px) {
-                        div[style*="flex: 0 0 calc(25%"] {
-                            flex: 0 0 calc(33.333% - 16px) !important;
-                        }
-                    }
-                    @media (max-width: 768px) {
-                        button[aria-label="Scroll left"],
-                        button[aria-label="Scroll right"] {
-                            display: none !important;
-                        }
-                        div[style*="flex: 0 0 calc(25%"] {
-                            flex: 0 0 calc(50% - 12px) !important;
-                        }
-                    }
-                    @media (max-width: 480px) {
-                        div[style*="flex: 0 0 calc(25%"] {
-                            flex: 0 0 calc(100% - 0px) !important;
-                        }
-                    }
-                `
-                }} />
             </section>
+
+            {/* Popup chi tiết sản phẩm: ảnh trái, thông tin phải */}
+            {selectedProduct && (
+                <ProductDetailModal
+                    product={selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                />
+            )}
         </>
     );
 }

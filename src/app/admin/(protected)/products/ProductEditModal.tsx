@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import type { Product } from "@/types";
+import { useState, useEffect, useRef, useMemo } from "react";
+import type { Product, Occasion } from "@/types";
+import { SUB_CATEGORIES_BY_OCCASION } from "@/types";
 
 interface ProductEditModalProps {
     product: Product;
@@ -20,8 +21,16 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
     const [title, setTitle] = useState(product.title || "");
     const [price, setPrice] = useState(product.price?.toString() || "");
     const [description, setDescription] = useState(product.description || "");
-    const [occasion, setOccasion] = useState(product.occasion || "tet");
+    const [occasion, setOccasion] = useState<Occasion>(product.occasion || "tet");
+    const [subCategory, setSubCategory] = useState(product.subCategory || "");
     const [active, setActive] = useState(product.active ?? true);
+
+    const validSubCategories = useMemo(() => SUB_CATEGORIES_BY_OCCASION[occasion].map((o) => o.value), [occasion]);
+    useEffect(() => {
+        if (subCategory && !validSubCategories.includes(subCategory)) {
+            setSubCategory("");
+        }
+    }, [occasion, validSubCategories, subCategory]);
 
     useEffect(() => {
         if (message?.type === "success") {
@@ -56,6 +65,12 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
         setLoading(true);
         setMessage(null);
 
+        if (!subCategory.trim()) {
+            setMessage({ type: "error", text: "Vui lòng chọn BST (Bộ sưu tập)" });
+            setLoading(false);
+            return;
+        }
+
         try {
             let imageUrl: string | null = product.image || null;
 
@@ -72,6 +87,7 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
 
                     const uploadRes = await fetch("/api/admin/upload", {
                         method: "POST",
+                        credentials: "include",
                         body: uploadFormData,
                     });
 
@@ -114,6 +130,7 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
                 price: parsedPrice,
                 description: description.trim() || undefined,
                 occasion,
+                subCategory: subCategory.trim(),
                 active,
             };
 
@@ -126,6 +143,7 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
 
             const res = await fetch(`/api/admin/products/${product._id}`, {
                 method: "PATCH",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productData),
             });
@@ -287,6 +305,34 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
                                     <option value="8-3">8/3</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <div>
+                            <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                                BST (Bộ sưu tập) *
+                            </label>
+                            <select
+                                value={subCategory}
+                                onChange={(e) => setSubCategory(e.target.value)}
+                                required
+                                style={{
+                                    width: "100%",
+                                    padding: 12,
+                                    border: "1px solid #ddd",
+                                    borderRadius: 6,
+                                    fontSize: 14,
+                                }}
+                            >
+                                <option value="">Chọn BST</option>
+                                {SUB_CATEGORIES_BY_OCCASION[occasion].map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </select>
+                            <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
+                                Chọn Tag (Dịp) trước, sau đó chọn BST (Mã Đáo, Kim Lộc, … theo dịp).
+                            </p>
                         </div>
 
                         {/* Mô tả */}

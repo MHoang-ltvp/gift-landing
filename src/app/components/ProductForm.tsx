@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import type { Occasion } from "@/types";
+import { SUB_CATEGORIES_BY_OCCASION } from "@/types";
 
 interface ProductFormProps {
     onSuccess?: () => void;
@@ -15,6 +17,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
     const [preview, setPreview] = useState<string | null>(null);
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
     const [imageSource, setImageSource] = useState<"file" | "url">("file");
+    const [occasion, setOccasion] = useState<Occasion>("tet");
 
     // Tự động ẩn thông báo thành công sau 3 giây
     useEffect(() => {
@@ -63,7 +66,13 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
             const title = formData.get("title")?.toString().trim() || "";
             const price = formData.get("price")?.toString().trim() || "";
             const description = formData.get("description")?.toString().trim() || "";
-            const occasion = formData.get("occasion")?.toString() || "tet";
+            const occasionValue = (formData.get("occasion")?.toString() || "tet") as Occasion;
+            const subCategory = formData.get("subCategory")?.toString().trim() || "";
+            if (!subCategory) {
+                setMessage({ type: "error", text: "Vui lòng chọn BST (Bộ sưu tập)" });
+                setLoading(false);
+                return;
+            }
             const imageFile = formData.get("image") as File | null;
             const imageUrlInput = formData.get("imageUrl")?.toString().trim() || "";
 
@@ -84,13 +93,25 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
 
                 const uploadRes = await fetch("/api/admin/upload", {
                     method: "POST",
+                    credentials: "include",
                     body: uploadFormData,
                 });
 
-                const uploadData = await uploadRes.json();
+                const uploadData = await uploadRes.json().catch(() => ({}));
+                const errorMessage = uploadData?.error || "Upload ảnh thất bại";
 
                 if (!uploadRes.ok) {
-                    throw new Error(uploadData.error || "Upload ảnh thất bại");
+                    if (uploadRes.status === 401) {
+                        throw new Error("Phiên đăng nhập hết hạn. Vui lòng đăng xuất và đăng nhập lại.");
+                    }
+                    if (uploadRes.status === 500 && errorMessage.includes("Cloudinary")) {
+                        throw new Error("Cấu hình Cloudinary thiếu hoặc sai. Kiểm tra file .env (CLOUDINARY_CLOUD_NAME, API_KEY, API_SECRET).");
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                if (!uploadData?.url) {
+                    throw new Error("Upload thành công nhưng không nhận được URL ảnh.");
                 }
 
                 imageUrl = uploadData.url;
@@ -122,12 +143,14 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                 price: parsedPrice,
                 description: description || undefined,
                 image: imageUrl || undefined,
-                occasion,
+                occasion: occasionValue,
+                subCategory,
                 active: true,
             };
 
             const res = await fetch("/api/admin/products", {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productData),
             });
@@ -235,6 +258,8 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                     <select
                         name="occasion"
                         required
+                        value={occasion}
+                        onChange={(e) => setOccasion(e.target.value as Occasion)}
                         style={{
                             width: "100%",
                             padding: 12,
@@ -247,6 +272,32 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                         <option value="valentine">Valentine</option>
                         <option value="8-3">8/3</option>
                     </select>
+                </div>
+                <div>
+                    <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                        BST (Bộ sưu tập) *
+                    </label>
+                    <select
+                        name="subCategory"
+                        required
+                        style={{
+                            width: "100%",
+                            padding: 12,
+                            border: "1px solid #ddd",
+                            borderRadius: 6,
+                            fontSize: 14,
+                        }}
+                    >
+                        <option value="">Chọn Tag (Dịp) trước, sau đó chọn BST</option>
+                        {SUB_CATEGORIES_BY_OCCASION[occasion].map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+                    <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
+                        Chọn Tag (Dịp) xong mới chọn BST. BST là Mã Đáo, Kim Lộc, Khởi Vận, An Khang (Tết); Thấu Hiểu, Tâm Tình, Trọn Vẹn (Valentine); Vĩnh Sắc, Xuân Sắc, Mộc Sắc (8/3).
+                    </p>
                 </div>
             </div>
 

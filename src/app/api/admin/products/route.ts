@@ -32,6 +32,7 @@ export async function POST(req: Request) {
         image: body.image?.toString().trim() || undefined,
         images: Array.isArray(body.images) ? body.images.map(String) : [],
         occasion: body.occasion, // "tet" | "valentine" | "8-3"
+        subCategory: body.subCategory?.toString().trim() || undefined,
         active: body.active ?? true,
         createdAt: new Date().toISOString(),
     };
@@ -40,4 +41,27 @@ export async function POST(req: Request) {
     const r = await db.collection("products").insertOne(product);
 
     return Response.json({ ok: true, id: r.insertedId });
+}
+
+/** Xóa toàn bộ sản phẩm. Gọi: DELETE /api/admin/products (không có segment [id]) */
+export async function DELETE() {
+    const auth = await requireAdminOrResponse();
+    if (auth instanceof Response) return auth;
+
+    try {
+        const db = await getDb();
+        const result = await db.collection("products").deleteMany({});
+
+        return Response.json({
+            ok: true,
+            deletedCount: result.deletedCount,
+            message: `Đã xóa ${result.deletedCount} sản phẩm`,
+        });
+    } catch (error) {
+        console.error("Error deleting all products:", error);
+        return Response.json(
+            { error: "Không thể xóa sản phẩm. Vui lòng thử lại." },
+            { status: 500 }
+        );
+    }
 }

@@ -35,12 +35,14 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"price" | "createdAt">("createdAt");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+    const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
+    const [deletingAll, setDeletingAll] = useState(false);
 
     // Refresh products after form submission
     useEffect(() => {
         const refreshProducts = async () => {
             try {
-                const res = await fetch("/api/admin/products");
+                const res = await fetch("/api/admin/products", { credentials: "include" });
                 if (res.ok) {
                     const data = await res.json();
                     setProducts(data.products || []);
@@ -89,20 +91,51 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
         }
     });
 
+    const handleDeleteAll = async () => {
+        setDeletingAll(true);
+        try {
+            const res = await fetch("/api/admin/products", {
+                method: "DELETE",
+                credentials: "include",
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (res.ok) {
+                setProducts([]);
+                setShowDeleteAllConfirm(false);
+                showSuccess(data.message || "Đã xóa toàn bộ sản phẩm!");
+            } else {
+                const msg = res.status === 401
+                    ? "Phiên đăng nhập hết hạn. Vui lòng đăng xuất và đăng nhập lại."
+                    : (data.error || "Không thể xóa sản phẩm");
+                showError(msg);
+            }
+        } catch (error) {
+            console.error("Error deleting all products:", error);
+            showError("Có lỗi xảy ra khi xóa sản phẩm");
+        } finally {
+            setDeletingAll(false);
+        }
+    };
+
     const handleDelete = async (productId: string) => {
         if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
 
         try {
             const res = await fetch(`/api/admin/products/${productId}`, {
                 method: "DELETE",
+                credentials: "include",
             });
+            const data = await res.json().catch(() => ({}));
 
             if (res.ok) {
                 showSuccess("Đã xóa sản phẩm thành công!");
-                // Cập nhật state ngay lập tức
                 setProducts((prev) => prev.filter((p) => p._id !== productId));
             } else {
-                showError("Không thể xóa sản phẩm");
+                const msg = res.status === 401
+                    ? "Phiên đăng nhập hết hạn. Vui lòng đăng xuất và đăng nhập lại."
+                    : (data.error || "Không thể xóa sản phẩm");
+                showError(msg);
             }
         } catch (error) {
             console.error("Error deleting product:", error);
@@ -121,6 +154,7 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
         try {
             const res = await fetch(`/api/admin/products/${productId}`, {
                 method: "PATCH",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ active: newActive }),
             });
@@ -170,7 +204,7 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
 
     return (
         <>
-            {/* Header with Add Button */}
+            {/* Header with Add Button and Delete All */}
             <div
                 style={{
                     display: "flex",
@@ -189,31 +223,129 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
                 >
                     Products
                 </h1>
-                <button
-                    onClick={() => setShowModal(true)}
-                    style={{
-                        padding: "12px 24px",
-                        background: "linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%)",
-                        color: "#ffffff",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow = "0 4px 12px rgba(124, 58, 237, 0.3)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "none";
-                    }}
-                >
-                    Add Products
-                </button>
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                    {products.length > 0 && (
+                        <button
+                            onClick={() => setShowDeleteAllConfirm(true)}
+                            style={{
+                                padding: "12px 24px",
+                                background: "#ffffff",
+                                color: "#dc2626",
+                                border: "1px solid #dc2626",
+                                borderRadius: "8px",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                transition: "all 0.2s",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = "#dc2626";
+                                e.currentTarget.style.color = "#fff";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = "#ffffff";
+                                e.currentTarget.style.color = "#dc2626";
+                            }}
+                        >
+                            Xóa tất cả
+                        </button>
+                    )}
+                    <button
+                        onClick={() => setShowModal(true)}
+                        style={{
+                            padding: "12px 24px",
+                            background: "linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%)",
+                            color: "#ffffff",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "translateY(-2px)";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(124, 58, 237, 0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "none";
+                        }}
+                    >
+                        Add Products
+                    </button>
+                </div>
             </div>
+
+            {/* Modal xác nhận xóa tất cả */}
+            {showDeleteAllConfirm && (
+                <div
+                    style={{
+                        position: "fixed",
+                        inset: 0,
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 1000,
+                    }}
+                    onClick={() => !deletingAll && setShowDeleteAllConfirm(false)}
+                >
+                    <div
+                        style={{
+                            backgroundColor: "#fff",
+                            borderRadius: "12px",
+                            padding: "24px",
+                            maxWidth: "400px",
+                            width: "90%",
+                            boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 style={{ margin: "0 0 12px", fontSize: "18px", color: TEXT_PRIMARY }}>
+                            Xóa toàn bộ sản phẩm?
+                        </h3>
+                        <p style={{ margin: "0 0 20px", fontSize: "14px", color: TEXT_SECONDARY, lineHeight: 1.5 }}>
+                            Bạn có chắc muốn xóa toàn bộ {products.length} sản phẩm? Hành động này không thể hoàn tác.
+                        </p>
+                        <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                            <button
+                                onClick={() => !deletingAll && setShowDeleteAllConfirm(false)}
+                                disabled={deletingAll}
+                                style={{
+                                    padding: "10px 20px",
+                                    border: `1px solid ${BORDER_COLOR}`,
+                                    borderRadius: "8px",
+                                    background: "#fff",
+                                    color: TEXT_SECONDARY,
+                                    fontSize: "14px",
+                                    fontWeight: 500,
+                                    cursor: deletingAll ? "not-allowed" : "pointer",
+                                }}
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                onClick={handleDeleteAll}
+                                disabled={deletingAll}
+                                style={{
+                                    padding: "10px 20px",
+                                    border: "none",
+                                    borderRadius: "8px",
+                                    background: "#dc2626",
+                                    color: "#fff",
+                                    fontSize: "14px",
+                                    fontWeight: 600,
+                                    cursor: deletingAll ? "not-allowed" : "pointer",
+                                    opacity: deletingAll ? 0.7 : 1,
+                                }}
+                            >
+                                {deletingAll ? "Đang xóa..." : "Xóa tất cả"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Filter Tabs and Search Bar */}
             <div
