@@ -8,8 +8,8 @@ export async function GET() {
     const settings = await db.collection("settings").findOne({});
 
     if (!settings) {
-        // Return default settings
-        return Response.json({
+        // Return default settings (no cache để luôn có thể load khi đã lưu)
+        const body = {
             contactInfo: {
                 hotline: "0968118025",
                 email: "goighem2026@gmail.com",
@@ -31,12 +31,17 @@ export async function GET() {
                 enabled: false,
                 webhookUrl: "",
             },
+        };
+        return Response.json(body, {
+            headers: { "Cache-Control": "no-store, max-age=0" },
         });
     }
 
-    // Remove _id and return
+    // Remove _id and return (no cache để footer luôn load đúng khi mở tab/browser mới)
     const { _id, ...settingsData } = settings;
-    return Response.json(settingsData);
+    return Response.json(settingsData, {
+        headers: { "Cache-Control": "no-store, max-age=0" },
+    });
 }
 
 // Update settings (admin only)

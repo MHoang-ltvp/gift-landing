@@ -38,6 +38,10 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
             updateData.qrImageUrl = body.qrImageUrl?.toString().trim() || null;
         }
 
+        if (body.musicUrl !== undefined) {
+            updateData.musicUrl = body.musicUrl ? body.musicUrl.toString().trim() : null;
+        }
+
         const result = await db.collection("cards").updateOne(
             { _id: new ObjectId(id) },
             { $set: updateData }

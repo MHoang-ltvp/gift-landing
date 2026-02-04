@@ -4,6 +4,29 @@ import { useEffect, useState, useRef } from "react";
 import { theme } from "@/lib/theme";
 import type { Settings } from "@/types";
 
+function getDefaultSettings(): Settings {
+    return {
+        contactInfo: {
+            hotline: "0968118025",
+            email: "goighem2026@gmail.com",
+        },
+        addresses: [
+            "81 Bà Triệu, Hai Bà Trưng",
+            "241 Chùa Bộc, Đống Đa",
+            "60 Trần Đại Nghĩa, Hai Bà Trưng",
+            "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
+            "157 Xuân Thủy, Cầu Giấy",
+        ],
+        socialLinks: {
+            instagram: { enabled: true, url: "#" },
+            facebook: { enabled: true, url: "#" },
+            youtube: { enabled: true, url: "#" },
+            tiktok: { enabled: true, url: "#" },
+        },
+        updatedAt: new Date().toISOString(),
+    };
+}
+
 export default function Footer() {
     const [isVisible, setIsVisible] = useState(false);
     const [settings, setSettings] = useState<Settings | null>(null);
@@ -31,35 +54,20 @@ export default function Footer() {
     }, []);
 
     useEffect(() => {
-        // Load settings
-        fetch("/api/admin/settings")
+        // Load settings (cache: no-store để luôn lấy dữ liệu mới từ server)
+        fetch("/api/admin/settings", { cache: "no-store" })
             .then((res) => res.json())
             .then((data) => {
-                setSettings(data);
+                // Chỉ dùng data nếu không phải response lỗi (vd: 401/500 trả { error: "..." })
+                if (data && !("error" in data && typeof data.error === "string")) {
+                    setSettings(data as Settings);
+                } else {
+                    setSettings(getDefaultSettings());
+                }
             })
             .catch((error) => {
                 console.error("Error loading settings:", error);
-                // Use default settings on error
-                setSettings({
-                    contactInfo: {
-                        hotline: "0968118025",
-                        email: "goighem2026@gmail.com",
-                    },
-                    addresses: [
-                        "81 Bà Triệu, Hai Bà Trưng",
-                        "241 Chùa Bộc, Đống Đa",
-                        "60 Trần Đại Nghĩa, Hai Bà Trưng",
-                        "226 Nguyễn Trãi, Nam Từ Liêm (gần ĐH Hà Nội)",
-                        "157 Xuân Thủy, Cầu Giấy",
-                    ],
-                    socialLinks: {
-                        instagram: { enabled: true, url: "#" },
-                        facebook: { enabled: true, url: "#" },
-                        youtube: { enabled: true, url: "#" },
-                        tiktok: { enabled: true, url: "#" },
-                    },
-                    updatedAt: new Date().toISOString(),
-                });
+                setSettings(getDefaultSettings());
             });
     }, []);
 

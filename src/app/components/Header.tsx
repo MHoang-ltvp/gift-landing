@@ -114,7 +114,16 @@ export default function Header({ allProducts = [] }: HeaderProps) {
                             e.currentTarget.style.transform = "scale(1)";
                         }}
                     >
-                        {/* <img src="https://res.cloudinary.com/djpnd5vb8/image/upload/v1769570004/z7470924509635_2b31184291f5edb777e5933d03dad08a_qmibyr.jpg"></img> */}
+                        <img
+                            src="https://res.cloudinary.com/djpnd5vb8/image/upload/v1769570004/z7470924509635_2b31184291f5edb777e5933d03dad08a_qmibyr.jpg"
+                            alt="Gói Ghém"
+                            style={{
+                                height: 44,
+                                width: "auto",
+                                objectFit: "contain",
+                                borderRadius: theme.borderRadius.md,
+                            }}
+                        />
                         <span>Gói Ghém</span>
                     </div>
 

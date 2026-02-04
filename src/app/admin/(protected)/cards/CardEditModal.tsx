@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import CardPreview from "@/app/components/CardPreview";
 import type { Card, CardOccasion } from "@/types";
+import { CARD_MUSIC_OPTIONS } from "@/types";
 import { theme } from "@/lib/theme";
 
 const PRIMARY_COLOR = "#7C3AED";
@@ -52,6 +53,12 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
     const [qrImageSource, setQrImageUrlSource] = useState<"file" | "url">("url");
     const [qrPreview, setQrPreview] = useState<string | null>(card.qrImageUrl || null);
     const [qrImageRemoved, setQrImageRemoved] = useState(false);
+    const [musicOption, setMusicOption] = useState(() => {
+        const url = card.musicUrl || "";
+        const found = CARD_MUSIC_OPTIONS.find((o) => o.value && o.value !== "__custom__" && o.value === url);
+        return found ? found.value : url ? "__custom__" : "";
+    });
+    const [musicCustomUrl, setMusicCustomUrl] = useState(card.musicUrl && !CARD_MUSIC_OPTIONS.some((o) => o.value === card.musicUrl) ? card.musicUrl : "");
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
 
@@ -196,6 +203,9 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
             if (finalQrImageUrl !== undefined) {
                 updateData.qrImageUrl = finalQrImageUrl;
             }
+
+            const finalMusicUrl = musicOption === "__custom__" ? (musicCustomUrl?.trim() || null) : (musicOption || null);
+            updateData.musicUrl = finalMusicUrl;
 
             const res = await fetch(`/api/admin/cards/${card._id}`, {
                 method: "PATCH",
@@ -658,6 +668,54 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                                                 ×
                                             </button>
                                         </div>
+                                    )}
+                                </div>
+
+                                {/* Chọn nhạc nền */}
+                                <div>
+                                    <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: TEXT_PRIMARY, marginBottom: "8px" }}>
+                                        Nhạc nền 🎵 (Tùy chọn)
+                                    </label>
+                                    <select
+                                        value={musicOption}
+                                        onChange={(e) => setMusicOption(e.target.value)}
+                                        style={{
+                                            width: "100%",
+                                            padding: "12px",
+                                            borderRadius: "8px",
+                                            border: `1px solid ${BORDER_COLOR}`,
+                                            fontSize: "14px",
+                                            outline: "none",
+                                            backgroundColor: "#ffffff",
+                                        }}
+                                    >
+                                        {CARD_MUSIC_OPTIONS.map((opt) => (
+                                            <option key={opt.value || "none"} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {musicOption === "__custom__" && (
+                                        <>
+                                            <input
+                                                type="url"
+                                                value={musicCustomUrl}
+                                                onChange={(e) => setMusicCustomUrl(e.target.value)}
+                                                placeholder="https://example.com/audio.mp3"
+                                                style={{
+                                                    width: "100%",
+                                                    marginTop: "8px",
+                                                    padding: "12px",
+                                                    borderRadius: "8px",
+                                                    border: `1px solid ${BORDER_COLOR}`,
+                                                    fontSize: "14px",
+                                                    outline: "none",
+                                                }}
+                                            />
+                                            <p style={{ marginTop: "8px", fontSize: "12px", color: TEXT_TERTIARY }}>
+                                                Nhập URL file nhạc (MP3, ...)
+                                            </p>
+                                        </>
                                     )}
                                 </div>
 

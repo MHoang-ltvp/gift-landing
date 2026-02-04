@@ -27,6 +27,11 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
+    // GET settings: public cho footer (mọi tab/browser đều load được)
+    if (pathname === "/api/admin/settings" && req.method === "GET") {
+        return NextResponse.next();
+    }
+
     // Lấy token từ cookie (ưu tiên) hoặc Authorization: Bearer <token>
     const token =
         req.cookies.get("admin_token")?.value ||

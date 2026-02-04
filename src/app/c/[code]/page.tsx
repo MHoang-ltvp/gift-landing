@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { notFound } from "next/navigation";
 import CardPreview from "@/app/components/CardPreview";
+import CardMusicPlayer from "@/app/components/CardMusicPlayer";
 import type { CardOccasion } from "@/types";
 
 export default async function CardPage({ params }: { params: Promise<{ code: string }> }) {
@@ -15,6 +16,7 @@ export default async function CardPage({ params }: { params: Promise<{ code: str
     const cardData = card as any;
     const occasion = (cardData.occasion || "newyear") as CardOccasion;
     const payload = cardData.payload || {};
+    const musicUrl = cardData.musicUrl as string | undefined;
 
     return (
         <main
@@ -35,6 +37,7 @@ export default async function CardPage({ params }: { params: Promise<{ code: str
                     margin: "0 auto",
                 }}
             >
+                <CardMusicPlayer musicUrl={musicUrl} />
                 <div
                     style={{
                         aspectRatio: "3/4",
