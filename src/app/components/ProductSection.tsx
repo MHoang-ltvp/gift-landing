@@ -120,19 +120,51 @@ export default function ProductSection({ occasion, products, label }: ProductSec
                                     animationDelay: `${0.15 + blockIndex * 0.05}s`,
                                 }}
                             >
-                                {/* Tên nhóm: Mã Đáo, Kim Lộc, ... */}
-                                <h3
+                                {/* Tên nhóm: Mã Đáo, Kim Lộc, ... — căn giữa, có line trang trí */}
+                                <div
                                     style={{
-                                        margin: 0,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: theme.spacing.lg,
                                         marginBottom: theme.spacing.lg,
-                                        fontSize: "clamp(20px, 2.5vw, 28px)",
-                                        fontWeight: theme.typography.fontWeight.semibold,
-                                        color: theme.colors.textPrimary,
-                                        fontFamily: theme.typography.fontFamily.body,
                                     }}
                                 >
-                                    {sub.label}
-                                </h3>
+                                    <span
+                                        style={{
+                                            flex: "1 1 0",
+                                            minWidth: 32,
+                                            height: 2,
+                                            borderRadius: 1,
+                                            background: `linear-gradient(90deg, transparent 0%, ${theme.colors.borderLight} 30%, ${theme.colors.primary} 70%, transparent 100%)`,
+                                            maxWidth: 140,
+                                        }}
+                                    />
+                                    <h3
+                                        style={{
+                                            margin: 0,
+                                            padding: `0 ${theme.spacing.lg}`,
+                                            fontSize: "clamp(18px, 2.2vw, 26px)",
+                                            fontWeight: theme.typography.fontWeight.semibold,
+                                            color: theme.colors.textPrimary,
+                                            fontFamily: theme.typography.fontFamily.display,
+                                            letterSpacing: "0.04em",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        {sub.label}
+                                    </h3>
+                                    <span
+                                        style={{
+                                            flex: "1 1 0",
+                                            minWidth: 32,
+                                            height: 2,
+                                            borderRadius: 1,
+                                            background: `linear-gradient(90deg, transparent 0%, ${theme.colors.primary} 30%, ${theme.colors.borderLight} 70%, transparent 100%)`,
+                                            maxWidth: 140,
+                                        }}
+                                    />
+                                </div>
                                 {/* Hàng sản phẩm của nhóm này; nếu không có thì hiển thị thông báo */}
                                 {blockProducts.length === 0 ? (
                                     <div
