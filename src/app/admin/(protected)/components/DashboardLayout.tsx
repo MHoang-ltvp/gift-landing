@@ -312,6 +312,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             Quản trị viên
                         </div>
                     </div>
+                    <button
+                        type="button"
+                        onClick={handleLogout}
+                        style={{
+                            padding: "8px 12px",
+                            borderRadius: "999px",
+                            border: "none",
+                            backgroundColor: "#F43F5E",
+                            color: "#ffffff",
+                            fontSize: "12px",
+                            fontWeight: 500,
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        Đăng xuất
+                    </button>
                 </div>
             </aside>
 
