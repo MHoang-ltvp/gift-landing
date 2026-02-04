@@ -77,7 +77,7 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                 alert("Vui lòng chọn file ảnh");
                 return;
             }
-            if (file.size > 5 * 1024 * 1024) {
+            if (file.size > 15 * 1024 * 1024) {
                 alert("Kích thước ảnh không được vượt quá 5MB");
                 return;
             }
@@ -559,7 +559,7 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                                                             alert("Vui lòng chọn file ảnh");
                                                             return;
                                                         }
-                                                        if (file.size > 5 * 1024 * 1024) {
+                                                        if (file.size > 15 * 1024 * 1024) {
                                                             alert("Kích thước ảnh không được vượt quá 5MB");
                                                             return;
                                                         }
@@ -913,20 +913,20 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                             <h3 style={{ fontSize: "18px", fontWeight: 600, color: TEXT_PRIMARY, marginBottom: "16px", flexShrink: 0 }}>
                                 Xem Trước Thiệp
                             </h3>
-                            <div 
-                                style={{ 
+                            <div
+                                style={{
                                     flex: 1,
-                                    borderRadius: "12px", 
-                                    overflow: "auto", 
+                                    borderRadius: "12px",
+                                    overflow: "auto",
                                     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                                     minHeight: 0,
                                 }}
                             >
                                 {/* Card Preview */}
-                                <CardPreview 
-                                    occasion={occasion} 
-                                    recipient={recipient} 
-                                    sender={sender} 
+                                <CardPreview
+                                    occasion={occasion}
+                                    recipient={recipient}
+                                    sender={sender}
                                     message={displayMessage}
                                     personalImageUrl={personalImagePreview || undefined}
                                 />

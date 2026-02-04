@@ -48,7 +48,7 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
                 setMessage({ type: "error", text: "Vui lòng chọn file ảnh" });
                 return;
             }
-            if (file.size > 5 * 1024 * 1024) {
+            if (file.size > 15 * 1024 * 1024) {
                 setMessage({ type: "error", text: "Kích thước ảnh không được vượt quá 5MB" });
                 return;
             }

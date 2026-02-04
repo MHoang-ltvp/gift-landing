@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
+        const maxSize = 15 * 1024 * 1024; // 5MB
         if (file.size > maxSize) {
             return Response.json({ error: "File size must be less than 5MB" }, { status: 400 });
         }
@@ -66,8 +66,8 @@ export async function POST(req: NextRequest) {
             error instanceof Error
                 ? error.message
                 : typeof (error as { message?: string })?.message === "string"
-                  ? (error as { message: string }).message
-                  : "Upload failed";
+                    ? (error as { message: string }).message
+                    : "Upload failed";
         return Response.json(
             { error: message },
             { status: 500 }

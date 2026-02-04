@@ -39,7 +39,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
             }
 
             // Validate file size (5MB)
-            if (file.size > 5 * 1024 * 1024) {
+            if (file.size > 15 * 1024 * 1024) {
                 setMessage({ type: "error", text: "Kích thước ảnh không được vượt quá 5MB" });
                 return;
             }
@@ -209,36 +209,15 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
             }} />
             <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {/* Tên sản phẩm */}
-            <div>
-                <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-                    Tên sản phẩm *
-                </label>
-                <input
-                    name="title"
-                    type="text"
-                    required
-                    placeholder="Nhập tên sản phẩm"
-                    style={{
-                        width: "100%",
-                        padding: 12,
-                        border: "1px solid #ddd",
-                        borderRadius: 6,
-                        fontSize: 14,
-                    }}
-                />
-            </div>
-
-            {/* Giá và Tag */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div>
                     <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-                        Giá (VNĐ)
+                        Tên sản phẩm *
                     </label>
                     <input
-                        name="price"
+                        name="title"
                         type="text"
-                        inputMode="numeric"
-                        placeholder="Nhập giá sản phẩm (ví dụ: 100000 hoặc 100,000)"
+                        required
+                        placeholder="Nhập tên sản phẩm"
                         style={{
                             width: "100%",
                             padding: 12,
@@ -247,145 +226,19 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                             fontSize: 14,
                         }}
                     />
-                    <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
-                        Có thể nhập số tự do, ví dụ: 100000, 100.000, 100,000
-                    </p>
-                </div>
-                <div>
-                    <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-                        Tag (Dịp) *
-                    </label>
-                    <select
-                        name="occasion"
-                        required
-                        value={occasion}
-                        onChange={(e) => setOccasion(e.target.value as Occasion)}
-                        style={{
-                            width: "100%",
-                            padding: 12,
-                            border: "1px solid #ddd",
-                            borderRadius: 6,
-                            fontSize: 14,
-                        }}
-                    >
-                        <option value="tet">Tết</option>
-                        <option value="valentine">Valentine</option>
-                        <option value="8-3">8/3</option>
-                    </select>
-                </div>
-                <div>
-                    <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-                        BST (Bộ sưu tập) *
-                    </label>
-                    <select
-                        name="subCategory"
-                        required
-                        style={{
-                            width: "100%",
-                            padding: 12,
-                            border: "1px solid #ddd",
-                            borderRadius: 6,
-                            fontSize: 14,
-                        }}
-                    >
-                        <option value="">Chọn Tag (Dịp) trước, sau đó chọn BST</option>
-                        {SUB_CATEGORIES_BY_OCCASION[occasion].map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </select>
-                    <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
-                        Chọn Tag (Dịp) xong mới chọn BST. BST là Mã Đáo, Kim Lộc, Khởi Vận, An Khang (Tết); Thấu Hiểu, Tâm Tình, Trọn Vẹn (Valentine); Vĩnh Sắc, Xuân Sắc, Mộc Sắc (8/3).
-                    </p>
-                </div>
-            </div>
-
-            {/* Mô tả */}
-            <div>
-                <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-                    Mô tả sản phẩm
-                </label>
-                <textarea
-                    name="description"
-                    rows={4}
-                    placeholder="Nhập mô tả sản phẩm"
-                    style={{
-                        width: "100%",
-                        padding: 12,
-                        border: "1px solid #ddd",
-                        borderRadius: 6,
-                        fontSize: 14,
-                        fontFamily: "inherit",
-                        resize: "vertical",
-                    }}
-                />
-            </div>
-
-            {/* Upload ảnh */}
-            <div>
-                <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-                    Ảnh sản phẩm
-                </label>
-                
-                {/* Tabs: Upload file hoặc URL */}
-                <div style={{ display: "flex", gap: 8, marginBottom: 12, borderBottom: "1px solid #e0e0e0" }}>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setImageSource("file");
-                            setPreview(null);
-                            const fileInput = document.querySelector('input[name="image"]') as HTMLInputElement;
-                            const urlInput = document.querySelector('input[name="imageUrl"]') as HTMLInputElement;
-                            if (fileInput) fileInput.value = "";
-                            if (urlInput) urlInput.value = "";
-                        }}
-                        style={{
-                            padding: "8px 16px",
-                            border: "none",
-                            borderBottom: "2px solid #d32f2f",
-                            backgroundColor: "transparent",
-                            color: "#d32f2f",
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            fontSize: 14,
-                        }}
-                    >
-                        📁 Upload File
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setImageSource("url");
-                            setPreview(null);
-                            const fileInput = document.querySelector('input[name="image"]') as HTMLInputElement;
-                            const urlInput = document.querySelector('input[name="imageUrl"]') as HTMLInputElement;
-                            if (fileInput) fileInput.value = "";
-                            if (urlInput) urlInput.value = "";
-                        }}
-                        style={{
-                            padding: "8px 16px",
-                            border: "none",
-                            borderBottom: imageSource === "url" ? "2px solid #d32f2f" : "2px solid transparent",
-                            backgroundColor: "transparent",
-                            color: imageSource === "url" ? "#d32f2f" : "#666",
-                            fontWeight: imageSource === "url" ? 600 : 400,
-                            cursor: "pointer",
-                            fontSize: 14,
-                        }}
-                    >
-                        🔗 URL Ảnh
-                    </button>
                 </div>
 
-                {/* File Upload */}
-                {imageSource === "file" && (
-                    <>
+                {/* Giá và Tag */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                    <div>
+                        <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                            Giá (VNĐ)
+                        </label>
                         <input
-                            name="image"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
+                            name="price"
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Nhập giá sản phẩm (ví dụ: 100000 hoặc 100,000)"
                             style={{
                                 width: "100%",
                                 padding: 12,
@@ -394,27 +247,19 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                                 fontSize: 14,
                             }}
                         />
-                        <p style={{ marginTop: 8, fontSize: 12, color: "#666" }}>
-                            Kích thước tối đa: 5MB. Định dạng: JPG, PNG, GIF
+                        <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
+                            Có thể nhập số tự do, ví dụ: 100000, 100.000, 100,000
                         </p>
-                    </>
-                )}
-
-                {/* URL Input */}
-                {imageSource === "url" && (
-                    <>
-                        <input
-                            name="imageUrl"
-                            type="url"
-                            placeholder="https://example.com/image.jpg"
-                            onChange={(e) => {
-                                const url = e.target.value.trim();
-                                if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
-                                    setPreview(url);
-                                } else if (!url) {
-                                    setPreview(null);
-                                }
-                            }}
+                    </div>
+                    <div>
+                        <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                            Tag (Dịp) *
+                        </label>
+                        <select
+                            name="occasion"
+                            required
+                            value={occasion}
+                            onChange={(e) => setOccasion(e.target.value as Occasion)}
                             style={{
                                 width: "100%",
                                 padding: 12,
@@ -422,33 +267,73 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                                 borderRadius: 6,
                                 fontSize: 14,
                             }}
-                        />
-                        <p style={{ marginTop: 8, fontSize: 12, color: "#666" }}>
-                            Nhập URL ảnh từ internet (phải bắt đầu bằng http:// hoặc https://)
-                        </p>
-                    </>
-                )}
-
-                {/* Preview */}
-                {preview && (
-                    <div style={{ marginTop: 12, position: "relative", display: "inline-block" }}>
-                        <img
-                            src={preview}
-                            alt="Preview"
-                            onError={() => {
-                                setPreview(null);
-                                setMessage({ type: "error", text: "Không thể tải ảnh từ URL này" });
-                            }}
+                        >
+                            <option value="tet">Tết</option>
+                            <option value="valentine">Valentine</option>
+                            <option value="8-3">8/3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                            BST (Bộ sưu tập) *
+                        </label>
+                        <select
+                            name="subCategory"
+                            required
                             style={{
-                                maxWidth: "100%",
-                                maxHeight: 300,
-                                borderRadius: 6,
+                                width: "100%",
+                                padding: 12,
                                 border: "1px solid #ddd",
+                                borderRadius: 6,
+                                fontSize: 14,
                             }}
-                        />
+                        >
+                            <option value="">Chọn Tag (Dịp) trước, sau đó chọn BST</option>
+                            {SUB_CATEGORIES_BY_OCCASION[occasion].map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </option>
+                            ))}
+                        </select>
+                        <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
+                            Chọn Tag (Dịp) xong mới chọn BST. BST là Mã Đáo, Kim Lộc, Khởi Vận, An Khang (Tết); Thấu Hiểu, Tâm Tình, Trọn Vẹn (Valentine); Vĩnh Sắc, Xuân Sắc, Mộc Sắc (8/3).
+                        </p>
+                    </div>
+                </div>
+
+                {/* Mô tả */}
+                <div>
+                    <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                        Mô tả sản phẩm
+                    </label>
+                    <textarea
+                        name="description"
+                        rows={4}
+                        placeholder="Nhập mô tả sản phẩm"
+                        style={{
+                            width: "100%",
+                            padding: 12,
+                            border: "1px solid #ddd",
+                            borderRadius: 6,
+                            fontSize: 14,
+                            fontFamily: "inherit",
+                            resize: "vertical",
+                        }}
+                    />
+                </div>
+
+                {/* Upload ảnh */}
+                <div>
+                    <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
+                        Ảnh sản phẩm
+                    </label>
+
+                    {/* Tabs: Upload file hoặc URL */}
+                    <div style={{ display: "flex", gap: 8, marginBottom: 12, borderBottom: "1px solid #e0e0e0" }}>
                         <button
                             type="button"
                             onClick={() => {
+                                setImageSource("file");
                                 setPreview(null);
                                 const fileInput = document.querySelector('input[name="image"]') as HTMLInputElement;
                                 const urlInput = document.querySelector('input[name="imageUrl"]') as HTMLInputElement;
@@ -456,102 +341,217 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                                 if (urlInput) urlInput.value = "";
                             }}
                             style={{
-                                position: "absolute",
-                                top: "8px",
-                                right: "8px",
-                                width: "28px",
-                                height: "28px",
-                                borderRadius: "50%",
-                                backgroundColor: "#EF4444",
-                                color: "#ffffff",
+                                padding: "8px 16px",
                                 border: "none",
+                                borderBottom: "2px solid #d32f2f",
+                                backgroundColor: "transparent",
+                                color: "#d32f2f",
+                                fontWeight: 600,
                                 cursor: "pointer",
+                                fontSize: 14,
+                            }}
+                        >
+                            📁 Upload File
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setImageSource("url");
+                                setPreview(null);
+                                const fileInput = document.querySelector('input[name="image"]') as HTMLInputElement;
+                                const urlInput = document.querySelector('input[name="imageUrl"]') as HTMLInputElement;
+                                if (fileInput) fileInput.value = "";
+                                if (urlInput) urlInput.value = "";
+                            }}
+                            style={{
+                                padding: "8px 16px",
+                                border: "none",
+                                borderBottom: imageSource === "url" ? "2px solid #d32f2f" : "2px solid transparent",
+                                backgroundColor: "transparent",
+                                color: imageSource === "url" ? "#d32f2f" : "#666",
+                                fontWeight: imageSource === "url" ? 600 : 400,
+                                cursor: "pointer",
+                                fontSize: 14,
+                            }}
+                        >
+                            🔗 URL Ảnh
+                        </button>
+                    </div>
+
+                    {/* File Upload */}
+                    {imageSource === "file" && (
+                        <>
+                            <input
+                                name="image"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                style={{
+                                    width: "100%",
+                                    padding: 12,
+                                    border: "1px solid #ddd",
+                                    borderRadius: 6,
+                                    fontSize: 14,
+                                }}
+                            />
+                            <p style={{ marginTop: 8, fontSize: 12, color: "#666" }}>
+                                Kích thước tối đa: 5MB. Định dạng: JPG, PNG, GIF
+                            </p>
+                        </>
+                    )}
+
+                    {/* URL Input */}
+                    {imageSource === "url" && (
+                        <>
+                            <input
+                                name="imageUrl"
+                                type="url"
+                                placeholder="https://example.com/image.jpg"
+                                onChange={(e) => {
+                                    const url = e.target.value.trim();
+                                    if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
+                                        setPreview(url);
+                                    } else if (!url) {
+                                        setPreview(null);
+                                    }
+                                }}
+                                style={{
+                                    width: "100%",
+                                    padding: 12,
+                                    border: "1px solid #ddd",
+                                    borderRadius: 6,
+                                    fontSize: 14,
+                                }}
+                            />
+                            <p style={{ marginTop: 8, fontSize: 12, color: "#666" }}>
+                                Nhập URL ảnh từ internet (phải bắt đầu bằng http:// hoặc https://)
+                            </p>
+                        </>
+                    )}
+
+                    {/* Preview */}
+                    {preview && (
+                        <div style={{ marginTop: 12, position: "relative", display: "inline-block" }}>
+                            <img
+                                src={preview}
+                                alt="Preview"
+                                onError={() => {
+                                    setPreview(null);
+                                    setMessage({ type: "error", text: "Không thể tải ảnh từ URL này" });
+                                }}
+                                style={{
+                                    maxWidth: "100%",
+                                    maxHeight: 300,
+                                    borderRadius: 6,
+                                    border: "1px solid #ddd",
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setPreview(null);
+                                    const fileInput = document.querySelector('input[name="image"]') as HTMLInputElement;
+                                    const urlInput = document.querySelector('input[name="imageUrl"]') as HTMLInputElement;
+                                    if (fileInput) fileInput.value = "";
+                                    if (urlInput) urlInput.value = "";
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    top: "8px",
+                                    right: "8px",
+                                    width: "28px",
+                                    height: "28px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "#EF4444",
+                                    color: "#ffffff",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "16px",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                                }}
+                                title="Xóa ảnh"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Message */}
+                {message && (
+                    <div
+                        style={{
+                            padding: "14px 16px",
+                            borderRadius: 6,
+                            backgroundColor: message.type === "success" ? "#d4edda" : "#f8d7da",
+                            color: message.type === "success" ? "#155724" : "#721c24",
+                            border: `1px solid ${message.type === "success" ? "#c3e6cb" : "#f5c6cb"}`,
+                            fontSize: 14,
+                            fontWeight: message.type === "success" ? 500 : 400,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 12,
+                            animation: "fadeIn 0.3s ease-in",
+                        }}
+                    >
+                        <span style={{ flex: 1 }}>{message.text}</span>
+                        <button
+                            type="button"
+                            onClick={() => setMessage(null)}
+                            style={{
+                                background: "transparent",
+                                border: "none",
+                                color: message.type === "success" ? "#155724" : "#721c24",
+                                cursor: "pointer",
+                                fontSize: 20,
+                                lineHeight: 1,
+                                padding: 0,
+                                width: 24,
+                                height: 24,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: "16px",
-                                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                                borderRadius: "50%",
+                                transition: "background-color 0.2s",
                             }}
-                            title="Xóa ảnh"
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = message.type === "success"
+                                    ? "rgba(21, 87, 36, 0.1)"
+                                    : "rgba(114, 28, 36, 0.1)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
+                            }}
+                            aria-label="Đóng thông báo"
                         >
                             ×
                         </button>
                     </div>
                 )}
-            </div>
 
-            {/* Message */}
-            {message && (
-                <div
+                {/* Submit button */}
+                <button
+                    type="submit"
+                    disabled={loading || uploading}
                     style={{
-                        padding: "14px 16px",
+                        padding: "12px 24px",
+                        backgroundColor: loading || uploading ? "#ccc" : "#d32f2f",
+                        color: "#fff",
+                        border: "none",
                         borderRadius: 6,
-                        backgroundColor: message.type === "success" ? "#d4edda" : "#f8d7da",
-                        color: message.type === "success" ? "#155724" : "#721c24",
-                        border: `1px solid ${message.type === "success" ? "#c3e6cb" : "#f5c6cb"}`,
-                        fontSize: 14,
-                        fontWeight: message.type === "success" ? 500 : 400,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 12,
-                        animation: "fadeIn 0.3s ease-in",
+                        fontSize: 16,
+                        fontWeight: 600,
+                        cursor: loading || uploading ? "not-allowed" : "pointer",
+                        transition: "all 0.2s",
                     }}
                 >
-                    <span style={{ flex: 1 }}>{message.text}</span>
-                    <button
-                        type="button"
-                        onClick={() => setMessage(null)}
-                        style={{
-                            background: "transparent",
-                            border: "none",
-                            color: message.type === "success" ? "#155724" : "#721c24",
-                            cursor: "pointer",
-                            fontSize: 20,
-                            lineHeight: 1,
-                            padding: 0,
-                            width: 24,
-                            height: 24,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: "50%",
-                            transition: "background-color 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = message.type === "success"
-                                ? "rgba(21, 87, 36, 0.1)"
-                                : "rgba(114, 28, 36, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "transparent";
-                        }}
-                        aria-label="Đóng thông báo"
-                    >
-                        ×
-                    </button>
-                </div>
-            )}
-
-            {/* Submit button */}
-            <button
-                type="submit"
-                disabled={loading || uploading}
-                style={{
-                    padding: "12px 24px",
-                    backgroundColor: loading || uploading ? "#ccc" : "#d32f2f",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 6,
-                    fontSize: 16,
-                    fontWeight: 600,
-                    cursor: loading || uploading ? "not-allowed" : "pointer",
-                    transition: "all 0.2s",
-                }}
-            >
-                {uploading ? "Đang upload ảnh..." : loading ? "Đang tạo..." : "Tạo sản phẩm"}
-            </button>
-        </form>
+                    {uploading ? "Đang upload ảnh..." : loading ? "Đang tạo..." : "Tạo sản phẩm"}
+                </button>
+            </form>
         </>
     );
 }
