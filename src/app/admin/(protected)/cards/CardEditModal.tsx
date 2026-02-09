@@ -11,6 +11,17 @@ const TEXT_SECONDARY = "#6B7280";
 const TEXT_TERTIARY = "#9CA3AF";
 const BORDER_COLOR = "#E5E7EB";
 const MAX_MESSAGE_LENGTH = 1000;
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // 4MB (tránh 413 trên Vercel)
+
+async function parseJsonResponse(res: Response): Promise<{ error?: string; url?: string; ok?: boolean }> {
+    const text = await res.text();
+    try {
+        return JSON.parse(text) as { error?: string; url?: string; ok?: boolean };
+    } catch {
+        if (res.status === 413) return { error: "File quá lớn (tối đa 4MB). Hãy dùng file nhỏ hơn hoặc chọn Nhập URL." };
+        return { error: "Lỗi không xác định" };
+    }
+}
 
 const defaultMessages: Record<CardOccasion, string[]> = {
     newyear: [
@@ -107,6 +118,11 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
 
             // Upload personal image if file is selected
             if (personalImageSource === "file" && personalImage) {
+                if (personalImage.size > MAX_UPLOAD_BYTES) {
+                    alert("Ảnh tối đa 4MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
+                    setSaving(false);
+                    return;
+                }
                 setUploading(true);
                 const uploadFormData = new FormData();
                 uploadFormData.append("file", personalImage);
@@ -117,13 +133,16 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                     credentials: "include",
                 });
 
-                const uploadData = await uploadRes.json();
+                const uploadData = await parseJsonResponse(uploadRes);
 
                 if (!uploadRes.ok) {
-                    throw new Error(uploadData.error || "Upload ảnh cá nhân thất bại");
+                    setUploading(false);
+                    alert(uploadData.error || "Upload ảnh cá nhân thất bại");
+                    setSaving(false);
+                    return;
                 }
 
-                finalPersonalImageUrl = uploadData.url;
+                finalPersonalImageUrl = uploadData.url ?? null;
                 setUploading(false);
             } else if (personalImageSource === "url") {
                 // Validate URL if provided
@@ -204,15 +223,19 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
 
             let finalMusicUrl: string | null = null;
             if (musicSource === "file" && musicFile) {
+                if (musicFile.size > MAX_UPLOAD_BYTES) {
+                    alert("File nhạc tối đa 4MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
+                    setSaving(false);
+                    return;
+                }
                 setUploading(true);
                 const musicFormData = new FormData();
                 musicFormData.append("file", musicFile);
                 const musicRes = await fetch("/api/admin/upload", { method: "POST", body: musicFormData, credentials: "include" });
-                const musicData = await musicRes.json();
+                const musicData = await parseJsonResponse(musicRes);
                 if (!musicRes.ok) {
-                    const msg = musicData?.error || "Upload nhạc thất bại";
                     setUploading(false);
-                    alert(msg);
+                    alert(musicData.error || "Upload nhạc thất bại");
                     setSaving(false);
                     return;
                 }
@@ -235,9 +258,10 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updateData),
+                credentials: "include",
             });
 
-            const data = await res.json();
+            const data = await parseJsonResponse(res);
             if (res.ok && data.ok) {
                 onSuccess();
             } else {
@@ -245,7 +269,8 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
             }
         } catch (error) {
             console.error("Error updating card:", error);
-            alert("Có lỗi xảy ra khi cập nhật thiệp!");
+            const msg = error instanceof Error ? error.message : "Có lỗi xảy ra khi cập nhật thiệp!";
+            alert(msg);
         } finally {
             setSaving(false);
             setUploading(false);

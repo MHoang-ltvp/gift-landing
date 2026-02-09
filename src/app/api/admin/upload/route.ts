@@ -32,10 +32,11 @@ export async function POST(req: NextRequest) {
             return Response.json({ error: "Chỉ chấp nhận file ảnh hoặc file nhạc (MP3, ...)" }, { status: 400 });
         }
 
-        const maxSize = isImage ? 15 * 1024 * 1024 : 10 * 1024 * 1024; // 15MB ảnh, 10MB nhạc
+        // Giới hạn 4MB để tránh 413 trên Vercel (body limit 4.5MB)
+        const maxSize = 4 * 1024 * 1024;
         if (file.size > maxSize) {
             return Response.json({
-                error: isImage ? "Ảnh tối đa 15MB" : "File nhạc tối đa 10MB",
+                error: "File tối đa 4MB (giới hạn server). Dùng file nhỏ hơn hoặc chọn Nhập URL.",
             }, { status: 400 });
         }
 
