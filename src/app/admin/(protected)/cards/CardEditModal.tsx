@@ -11,14 +11,15 @@ const TEXT_SECONDARY = "#6B7280";
 const TEXT_TERTIARY = "#9CA3AF";
 const BORDER_COLOR = "#E5E7EB";
 const MAX_MESSAGE_LENGTH = 1000;
-const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // 4MB (tránh 413 trên Vercel)
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB ảnh
+const MAX_MUSIC_BYTES = 15 * 1024 * 1024; // 15MB nhạc
 
 async function parseJsonResponse(res: Response): Promise<{ error?: string; url?: string; ok?: boolean }> {
     const text = await res.text();
     try {
         return JSON.parse(text) as { error?: string; url?: string; ok?: boolean };
     } catch {
-        if (res.status === 413) return { error: "File quá lớn (tối đa 4MB). Hãy dùng file nhỏ hơn hoặc chọn Nhập URL." };
+        if (res.status === 413) return { error: "File quá lớn (giới hạn server, ví dụ Vercel ~4.5MB). Dùng file nhỏ hơn hoặc chọn Nhập URL." };
         return { error: "Lỗi không xác định" };
     }
 }
@@ -84,8 +85,8 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                 alert("Vui lòng chọn file ảnh");
                 return;
             }
-            if (file.size > 15 * 1024 * 1024) {
-                alert("Kích thước ảnh không được vượt quá 5MB");
+            if (file.size > MAX_IMAGE_BYTES) {
+                alert("Ảnh tối đa 10MB");
                 return;
             }
             const reader = new FileReader();
@@ -118,8 +119,8 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
 
             // Upload personal image if file is selected
             if (personalImageSource === "file" && personalImage) {
-                if (personalImage.size > MAX_UPLOAD_BYTES) {
-                    alert("Ảnh tối đa 4MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
+                if (personalImage.size > MAX_IMAGE_BYTES) {
+                    alert("Ảnh tối đa 10MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
                     setSaving(false);
                     return;
                 }
@@ -171,6 +172,11 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                 const fileInput = document.querySelector('input[name="qrImage"]') as HTMLInputElement;
                 const file = fileInput?.files?.[0];
                 if (file) {
+                    if (file.size > MAX_IMAGE_BYTES) {
+                        alert("Ảnh QR tối đa 10MB. Hãy chọn file nhỏ hơn.");
+                        setSaving(false);
+                        return;
+                    }
                     setUploading(true);
                     const uploadFormData = new FormData();
                     uploadFormData.append("file", file);
@@ -181,13 +187,16 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                         credentials: "include",
                     });
 
-                    const uploadData = await uploadRes.json();
+                    const uploadData = await parseJsonResponse(uploadRes);
 
                     if (!uploadRes.ok) {
-                        throw new Error(uploadData.error || "Upload ảnh QR thất bại");
+                        setUploading(false);
+                        alert(uploadData.error || "Upload ảnh QR thất bại");
+                        setSaving(false);
+                        return;
                     }
 
-                    finalQrImageUrl = uploadData.url;
+                    finalQrImageUrl = uploadData.url ?? null;
                     setUploading(false);
                 }
             } else if (qrImageSource === "url") {
@@ -223,8 +232,8 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
 
             let finalMusicUrl: string | null = null;
             if (musicSource === "file" && musicFile) {
-                if (musicFile.size > MAX_UPLOAD_BYTES) {
-                    alert("File nhạc tối đa 4MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
+                if (musicFile.size > MAX_MUSIC_BYTES) {
+                    alert("File nhạc tối đa 15MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
                     setSaving(false);
                     return;
                 }
@@ -608,8 +617,8 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                                                             alert("Vui lòng chọn file ảnh");
                                                             return;
                                                         }
-                                                        if (file.size > 15 * 1024 * 1024) {
-                                                            alert("Kích thước ảnh không được vượt quá 5MB");
+                                                        if (file.size > MAX_IMAGE_BYTES) {
+                                                            alert("Ảnh tối đa 10MB");
                                                             return;
                                                         }
                                                         setPersonalImage(file);

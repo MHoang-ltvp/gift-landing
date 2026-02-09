@@ -11,14 +11,15 @@ const TEXT_SECONDARY = "#6B7280";
 const TEXT_TERTIARY = "#9CA3AF";
 const BORDER_COLOR = "#E5E7EB";
 const MAX_MESSAGE_LENGTH = 1000;
-const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // 4MB (tránh 413 trên Vercel)
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB ảnh
+const MAX_MUSIC_BYTES = 15 * 1024 * 1024; // 15MB nhạc
 
 async function parseJsonResponse(res: Response): Promise<{ error?: string; url?: string; ok?: boolean }> {
     const text = await res.text();
     try {
         return JSON.parse(text) as { error?: string; url?: string; ok?: boolean };
     } catch {
-        if (res.status === 413) return { error: "File quá lớn (tối đa 4MB). Hãy dùng file nhỏ hơn hoặc chọn Nhập URL." };
+        if (res.status === 413) return { error: "File quá lớn (giới hạn server, ví dụ Vercel ~4.5MB). Dùng file nhỏ hơn hoặc chọn Nhập URL." };
         return { error: "Lỗi không xác định" };
     }
 }
@@ -86,8 +87,8 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
 
             // Upload personal image if file is selected
             if (personalImageSource === "file" && personalImage) {
-                if (personalImage.size > MAX_UPLOAD_BYTES) {
-                    alert("Ảnh tối đa 4MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
+                if (personalImage.size > MAX_IMAGE_BYTES) {
+                    alert("Ảnh tối đa 10MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
                     setSaving(false);
                     return;
                 }
@@ -124,8 +125,8 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
 
             let finalMusicUrl: string | undefined;
             if (musicSource === "file" && musicFile) {
-                if (musicFile.size > MAX_UPLOAD_BYTES) {
-                    alert("File nhạc tối đa 4MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
+                if (musicFile.size > MAX_MUSIC_BYTES) {
+                    alert("File nhạc tối đa 15MB. Hãy chọn file nhỏ hơn hoặc dùng Nhập URL.");
                     setSaving(false);
                     return;
                 }
