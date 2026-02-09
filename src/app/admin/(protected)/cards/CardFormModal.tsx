@@ -3,7 +3,6 @@
 import { useState } from "react";
 import CardPreview from "@/app/components/CardPreview";
 import type { CardOccasion } from "@/types";
-import { CARD_MUSIC_OPTIONS } from "@/types";
 import { theme } from "@/lib/theme";
 
 const PRIMARY_COLOR = "#7C3AED";
@@ -47,7 +46,8 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
     const [personalImagePreview, setPersonalImagePreview] = useState<string | null>(null);
     const [personalImageSource, setPersonalImageSource] = useState<"file" | "url">("file");
     const [personalImageUrl, setPersonalImageUrl] = useState("");
-    const [musicOption, setMusicOption] = useState("");
+    const [musicSource, setMusicSource] = useState<"none" | "file" | "url">("none");
+    const [musicFile, setMusicFile] = useState<File | null>(null);
     const [musicCustomUrl, setMusicCustomUrl] = useState("");
     const [uploading, setUploading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -82,6 +82,7 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                 const uploadRes = await fetch("/api/admin/upload", {
                     method: "POST",
                     body: uploadFormData,
+                    credentials: "include",
                 });
 
                 const uploadData = await uploadRes.json();
@@ -102,6 +103,31 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                 finalPersonalImageUrl = personalImageUrl.trim();
             }
 
+            let finalMusicUrl: string | undefined;
+            if (musicSource === "file" && musicFile) {
+                setUploading(true);
+                const musicFormData = new FormData();
+                musicFormData.append("file", musicFile);
+                const musicRes = await fetch("/api/admin/upload", { method: "POST", body: musicFormData, credentials: "include" });
+                const musicData = await musicRes.json();
+                if (!musicRes.ok) {
+                    const msg = musicData?.error || "Upload nhạc thất bại";
+                    setUploading(false);
+                    alert(msg);
+                    setSaving(false);
+                    return;
+                }
+                finalMusicUrl = musicData.url;
+                setUploading(false);
+            } else if (musicSource === "url" && musicCustomUrl?.trim()) {
+                if (!musicCustomUrl.startsWith("http://") && !musicCustomUrl.startsWith("https://")) {
+                    alert("URL nhạc phải bắt đầu bằng http:// hoặc https://");
+                    setSaving(false);
+                    return;
+                }
+                finalMusicUrl = musicCustomUrl.trim();
+            }
+
             const res = await fetch("/api/admin/cards", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -113,7 +139,7 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                         message: finalMessage,
                     },
                     personalImageUrl: finalPersonalImageUrl || undefined,
-                    musicUrl: musicOption === "__custom__" ? (musicCustomUrl?.trim() || undefined) : (musicOption || undefined),
+                    musicUrl: finalMusicUrl,
                 }),
             });
 
@@ -128,7 +154,8 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                 setPersonalImageUrl("");
                 setPersonalImagePreview(null);
                 setPersonalImageSource("file");
-                setMusicOption("");
+                setMusicSource("none");
+                setMusicFile(null);
                 setMusicCustomUrl("");
                 onSuccess();
             } else {
@@ -598,31 +625,52 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                                     )}
                                 </div>
 
-                                {/* Chọn nhạc nền */}
+                                {/* Nhạc nền: không / tải file / nhập URL */}
                                 <div>
                                     <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: TEXT_PRIMARY, marginBottom: "8px" }}>
                                         Nhạc nền 🎵 (Tùy chọn)
                                     </label>
-                                    <select
-                                        value={musicOption}
-                                        onChange={(e) => setMusicOption(e.target.value)}
-                                        style={{
-                                            width: "100%",
-                                            padding: "12px",
-                                            borderRadius: "8px",
-                                            border: `1px solid ${BORDER_COLOR}`,
-                                            fontSize: "14px",
-                                            outline: "none",
-                                            backgroundColor: "#ffffff",
-                                        }}
-                                    >
-                                        {CARD_MUSIC_OPTIONS.map((opt) => (
-                                            <option key={opt.value || "none"} value={opt.value}>
-                                                {opt.label}
-                                            </option>
+                                    <div style={{ display: "flex", gap: "12px", marginBottom: "10px", flexWrap: "wrap" }}>
+                                        {(["none", "file", "url"] as const).map((src) => (
+                                            <label
+                                                key={src}
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: "6px",
+                                                    cursor: "pointer",
+                                                    fontSize: "14px",
+                                                    color: musicSource === src ? PRIMARY_COLOR : TEXT_SECONDARY,
+                                                    fontWeight: musicSource === src ? 600 : 400,
+                                                }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="musicSource"
+                                                    checked={musicSource === src}
+                                                    onChange={() => setMusicSource(src)}
+                                                />
+                                                {src === "none" && "Không phát nhạc"}
+                                                {src === "file" && "Tải file lên (MP3, ...)"}
+                                                {src === "url" && "Nhập URL"}
+                                            </label>
                                         ))}
-                                    </select>
-                                    {musicOption === "__custom__" && (
+                                    </div>
+                                    {musicSource === "file" && (
+                                        <input
+                                            type="file"
+                                            accept="audio/*"
+                                            onChange={(e) => setMusicFile(e.target.files?.[0] ?? null)}
+                                            style={{
+                                                width: "100%",
+                                                padding: "8px",
+                                                borderRadius: "8px",
+                                                border: `1px solid ${BORDER_COLOR}`,
+                                                fontSize: "14px",
+                                            }}
+                                        />
+                                    )}
+                                    {musicSource === "url" && (
                                         <>
                                             <input
                                                 type="url"
@@ -631,7 +679,7 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                                                 placeholder="https://example.com/audio.mp3"
                                                 style={{
                                                     width: "100%",
-                                                    marginTop: "8px",
+                                                    marginTop: "4px",
                                                     padding: "12px",
                                                     borderRadius: "8px",
                                                     border: `1px solid ${BORDER_COLOR}`,
@@ -639,8 +687,8 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                                                     outline: "none",
                                                 }}
                                             />
-                                            <p style={{ marginTop: "8px", fontSize: "12px", color: TEXT_TERTIARY }}>
-                                                Nhập URL file nhạc (MP3, ...)
+                                            <p style={{ marginTop: "6px", fontSize: "12px", color: TEXT_TERTIARY }}>
+                                                Dán link trực tiếp tới file nhạc (MP3, ...)
                                             </p>
                                         </>
                                     )}

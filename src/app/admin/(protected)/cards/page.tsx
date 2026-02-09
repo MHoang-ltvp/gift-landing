@@ -13,6 +13,7 @@ async function getCards() {
         payload: card.payload,
         personalImageUrl: card.personalImageUrl,
         qrImageUrl: card.qrImageUrl,
+        musicUrl: card.musicUrl ?? undefined,
         createdAt: card.createdAt,
     })) as Card[];
 }

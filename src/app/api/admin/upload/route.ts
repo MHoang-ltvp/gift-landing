@@ -22,29 +22,32 @@ export async function POST(req: NextRequest) {
             return Response.json({ error: "No file provided" }, { status: 400 });
         }
 
-        // Validate file type
-        if (!file.type.startsWith("image/")) {
-            return Response.json({ error: "File must be an image" }, { status: 400 });
+        const isImage = file.type.startsWith("image/");
+        const name = (file.name || "").toLowerCase();
+        const isAudioByType = file.type.startsWith("audio/");
+        const isAudioByExt = /\.(mp3|wav|ogg|m4a|aac|webm)$/.test(name);
+        const isAudio = isAudioByType || isAudioByExt;
+
+        if (!isImage && !isAudio) {
+            return Response.json({ error: "Chỉ chấp nhận file ảnh hoặc file nhạc (MP3, ...)" }, { status: 400 });
         }
 
-        // Validate file size (max 5MB)
-        const maxSize = 15 * 1024 * 1024; // 5MB
+        const maxSize = isImage ? 15 * 1024 * 1024 : 10 * 1024 * 1024; // 15MB ảnh, 10MB nhạc
         if (file.size > maxSize) {
-            return Response.json({ error: "File size must be less than 5MB" }, { status: 400 });
+            return Response.json({
+                error: isImage ? "Ảnh tối đa 15MB" : "File nhạc tối đa 10MB",
+            }, { status: 400 });
         }
 
-        // Convert File to buffer
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Upload to Cloudinary (chỉ folder + resource_type; transformation dùng khi hiển thị URL)
         const uploadResult = await new Promise((resolve, reject) => {
             cloudinary.uploader
                 .upload_stream(
-                    {
-                        folder: "goighem/products",
-                        resource_type: "image",
-                    },
+                    isImage
+                        ? { folder: "goighem/products", resource_type: "image" }
+                        : { folder: "goighem/music", resource_type: "raw" },
                     (error, result) => {
                         if (error) reject(error);
                         else resolve(result);

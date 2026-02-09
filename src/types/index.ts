@@ -1,15 +1,6 @@
 export type Occasion = "tet" | "valentine" | "8-3";
 export type CardOccasion = "newyear" | "valentine" | "womensday";
 
-/** Tùy chọn nhạc nền cho thiệp (tạm thời chung, sau có thể phân loại theo occasion) */
-export const CARD_MUSIC_OPTIONS: { value: string; label: string }[] = [
-    { value: "", label: "Không phát nhạc" },
-    { value: "/music/tet.mp3", label: "Nhạc nền Tết" },
-    { value: "/music/valentine.mp3", label: "Nhạc nền Valentine" },
-    { value: "/music/womensday.mp3", label: "Nhạc nền 8/3" },
-    { value: "__custom__", label: "Nhập URL tùy chỉnh..." },
-];
-
 /** Sub-category slug theo từng occasion (dùng cho toggle danh mục) */
 export type TetSubCategory = "ma_dao" | "kim_loc" | "khoi_van" | "an_khang";
 export type ValentineSubCategory = "thau_hieu" | "tam_tinh" | "tron_ven";
