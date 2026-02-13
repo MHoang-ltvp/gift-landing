@@ -540,7 +540,7 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                                                             return;
                                                         }
                                                         if (file.size > 15 * 1024 * 1024) {
-                                                            alert("Kích thước ảnh không được vượt quá 5MB");
+                                                            alert("Kích thước ảnh không được vượt quá 15MB");
                                                             return;
                                                         }
                                                         setPersonalImage(file);
@@ -560,7 +560,7 @@ export default function CardFormModal({ onClose, onSuccess }: CardFormModalProps
                                                 }}
                                             />
                                             <p style={{ marginTop: "8px", fontSize: "12px", color: TEXT_TERTIARY }}>
-                                                Upload ảnh dọc (portrait) để hiển thị trong thiệp (tối đa 5MB)
+                                                Upload ảnh dọc (portrait) để hiển thị trong thiệp (tối đa 15MB)
                                             </p>
                                         </>
                                     )}

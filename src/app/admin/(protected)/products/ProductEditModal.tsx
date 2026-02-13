@@ -49,7 +49,7 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
                 return;
             }
             if (file.size > 15 * 1024 * 1024) {
-                setMessage({ type: "error", text: "Kích thước ảnh không được vượt quá 5MB" });
+                setMessage({ type: "error", text: "Kích thước ảnh không được vượt quá 15MB" });
                 return;
             }
             const reader = new FileReader();

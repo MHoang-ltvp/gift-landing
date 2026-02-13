@@ -38,9 +38,9 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                 return;
             }
 
-            // Validate file size (5MB)
+            // Validate file size (15MB)
             if (file.size > 15 * 1024 * 1024) {
-                setMessage({ type: "error", text: "Kích thước ảnh không được vượt quá 5MB" });
+                setMessage({ type: "error", text: "Kích thước ảnh không được vượt quá 15MB" });
                 return;
             }
 
@@ -395,7 +395,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                                 }}
                             />
                             <p style={{ marginTop: 8, fontSize: 12, color: "#666" }}>
-                                Kích thước tối đa: 5MB. Định dạng: JPG, PNG, GIF
+                                Kích thước tối đa: 15MB. Định dạng: JPG, PNG, GIF
                             </p>
                         </>
                     )}

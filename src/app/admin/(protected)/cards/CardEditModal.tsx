@@ -638,7 +638,7 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                                                 }}
                                             />
                                             <p style={{ marginTop: "8px", fontSize: "12px", color: TEXT_TERTIARY }}>
-                                                Upload ảnh dọc (portrait) để hiển thị trong thiệp (tối đa 5MB)
+                                                Upload ảnh dọc (portrait) để hiển thị trong thiệp (tối đa 15MB)
                                             </p>
                                         </>
                                     )}
@@ -893,7 +893,7 @@ export default function CardEditModal({ card, onClose, onSuccess }: CardEditModa
                                                 }}
                                             />
                                             <p style={{ marginTop: "8px", fontSize: "12px", color: TEXT_TERTIARY }}>
-                                                Upload ảnh QR code (tối đa 5MB)
+                                                Upload ảnh QR code (tối đa 15MB)
                                             </p>
                                         </>
                                     )}
