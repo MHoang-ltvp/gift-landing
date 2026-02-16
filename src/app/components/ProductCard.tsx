@@ -176,11 +176,16 @@ export default function ProductCard({ product, priority = false, variant = "defa
                         </p>
                     )}
 
-                    {/* Price */}
+                    {/* Price và Button Xem chi tiết */}
                     {product.price && (
                         <div
                             style={{
                                 marginTop: theme.spacing.xs,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: theme.spacing.sm,
+                                flexWrap: "wrap",
                             }}
                         >
                             <span
@@ -193,6 +198,40 @@ export default function ProductCard({ product, priority = false, variant = "defa
                             >
                                 {product.price.toLocaleString("vi-VN")}₫
                             </span>
+                            {onClick && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Ngăn trigger onClick của card
+                                        onClick(product);
+                                    }}
+                                    style={{
+                                        padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+                                        backgroundColor: theme.colors.primary,
+                                        color: theme.colors.textWhite,
+                                        border: "none",
+                                        borderRadius: theme.borderRadius.md,
+                                        fontSize: "clamp(12px, 1.2vw, 14px)",
+                                        fontWeight: theme.typography.fontWeight.medium,
+                                        fontFamily: theme.typography.fontFamily.body,
+                                        cursor: "pointer",
+                                        transition: theme.transitions.normal,
+                                        whiteSpace: "nowrap",
+                                        boxShadow: theme.shadows.sm,
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = theme.colors.primaryDark;
+                                        e.currentTarget.style.transform = "translateY(-2px)";
+                                        e.currentTarget.style.boxShadow = theme.shadows.md;
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = theme.colors.primary;
+                                        e.currentTarget.style.transform = "translateY(0)";
+                                        e.currentTarget.style.boxShadow = theme.shadows.sm;
+                                    }}
+                                >
+                                    Xem chi tiết
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>

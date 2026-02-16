@@ -25,6 +25,196 @@ const occasionConfig: Record<Occasion, { tagline: string }> = {
     },
 };
 
+interface ScrollableProductRowProps {
+    products: Product[];
+    isVisible: boolean;
+    onProductClick: (product: Product) => void;
+}
+
+function ScrollableProductRow({ products, isVisible, onProductClick }: ScrollableProductRowProps) {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [showLeftButton, setShowLeftButton] = useState(false);
+    const [showRightButton, setShowRightButton] = useState(false);
+
+    const checkScrollButtons = () => {
+        if (!scrollContainerRef.current) return;
+        
+        const container = scrollContainerRef.current;
+        const { scrollLeft, scrollWidth, clientWidth } = container;
+        
+        // Kiểm tra nếu có thể scroll (nội dung vượt quá container)
+        const canScroll = scrollWidth > clientWidth;
+        
+        // Hiển thị nút trái nếu đã scroll sang phải
+        setShowLeftButton(canScroll && scrollLeft > 10);
+        
+        // Hiển thị nút phải nếu chưa scroll hết
+        setShowRightButton(canScroll && scrollLeft < scrollWidth - clientWidth - 10);
+    };
+
+    useEffect(() => {
+        checkScrollButtons();
+        
+        const container = scrollContainerRef.current;
+        if (!container) return;
+
+        // Kiểm tra lại khi resize
+        const handleResize = () => {
+            // Delay nhỏ để đảm bảo layout đã cập nhật
+            setTimeout(checkScrollButtons, 100);
+        };
+
+        // Kiểm tra lại khi scroll
+        container.addEventListener("scroll", checkScrollButtons);
+        window.addEventListener("resize", handleResize);
+
+        // Kiểm tra lại sau khi component mount và khi products thay đổi
+        const timeoutId = setTimeout(checkScrollButtons, 300);
+
+        return () => {
+            container.removeEventListener("scroll", checkScrollButtons);
+            window.removeEventListener("resize", handleResize);
+            clearTimeout(timeoutId);
+        };
+    }, [products]);
+
+    const scroll = (direction: "left" | "right") => {
+        if (!scrollContainerRef.current) return;
+        
+        const container = scrollContainerRef.current;
+        const cardWidth = 280; // width của mỗi card
+        const gap = parseInt(theme.spacing.lg); // gap giữa các card
+        const scrollAmount = cardWidth + gap;
+        
+        container.scrollBy({
+            left: direction === "left" ? -scrollAmount : scrollAmount,
+            behavior: "smooth",
+        });
+    };
+
+    return (
+        <div style={{ position: "relative", width: "100%" }}>
+            {/* Nút trái */}
+            {showLeftButton && (
+                <button
+                    onClick={() => scroll("left")}
+                    style={{
+                        position: "absolute",
+                        left: "-24px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        zIndex: 10,
+                        width: "48px",
+                        height: "48px",
+                        borderRadius: theme.borderRadius.full,
+                        backgroundColor: theme.colors.bgWhite,
+                        border: `2px solid ${theme.colors.primary}`,
+                        color: theme.colors.primary,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "24px",
+                        fontWeight: theme.typography.fontWeight.bold,
+                        boxShadow: theme.shadows.md,
+                        transition: theme.transitions.normal,
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = theme.colors.primary;
+                        e.currentTarget.style.color = theme.colors.textWhite;
+                        e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = theme.colors.bgWhite;
+                        e.currentTarget.style.color = theme.colors.primary;
+                        e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                    }}
+                    aria-label="Cuộn sang trái"
+                >
+                    ‹
+                </button>
+            )}
+
+            {/* Container sản phẩm */}
+            <div
+                ref={scrollContainerRef}
+                className="category-row"
+                style={{
+                    display: "flex",
+                    gap: theme.spacing.lg,
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    scrollBehavior: "smooth",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    paddingBottom: theme.spacing.md,
+                }}
+            >
+                {products.map((product, index) => (
+                    <div
+                        key={product._id}
+                        className={isVisible ? "card-animate" : ""}
+                        style={{
+                            flex: "0 0 280px",
+                            width: 280,
+                            minWidth: 280,
+                            animationDelay: `${0.2 + index * 0.08}s`,
+                        }}
+                    >
+                        <ProductCard
+                            product={product}
+                            variant="block"
+                            priority={index < 3}
+                            onClick={onProductClick}
+                        />
+                    </div>
+                ))}
+            </div>
+
+            {/* Nút phải */}
+            {showRightButton && (
+                <button
+                    onClick={() => scroll("right")}
+                    style={{
+                        position: "absolute",
+                        right: "-24px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        zIndex: 10,
+                        width: "48px",
+                        height: "48px",
+                        borderRadius: theme.borderRadius.full,
+                        backgroundColor: theme.colors.bgWhite,
+                        border: `2px solid ${theme.colors.primary}`,
+                        color: theme.colors.primary,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "24px",
+                        fontWeight: theme.typography.fontWeight.bold,
+                        boxShadow: theme.shadows.md,
+                        transition: theme.transitions.normal,
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = theme.colors.primary;
+                        e.currentTarget.style.color = theme.colors.textWhite;
+                        e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = theme.colors.bgWhite;
+                        e.currentTarget.style.color = theme.colors.primary;
+                        e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                    }}
+                    aria-label="Cuộn sang phải"
+                >
+                    ›
+                </button>
+            )}
+        </div>
+    );
+}
+
 export default function ProductSection({ occasion, products, label }: ProductSectionProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -181,39 +371,11 @@ export default function ProductSection({ occasion, products, label }: ProductSec
                                         Chưa có sản phẩm trong nhóm {sub.label}
                                     </div>
                                 ) : (
-                                    <div
-                                        className="category-row"
-                                        style={{
-                                            display: "flex",
-                                            gap: theme.spacing.lg,
-                                            overflowX: "auto",
-                                            overflowY: "hidden",
-                                            scrollBehavior: "smooth",
-                                            scrollbarWidth: "none",
-                                            msOverflowStyle: "none",
-                                            paddingBottom: theme.spacing.md,
-                                        }}
-                                    >
-                                        {blockProducts.map((product, index) => (
-                                            <div
-                                                key={product._id}
-                                                className={isVisible ? "card-animate" : ""}
-                                                style={{
-                                                    flex: "0 0 280px",
-                                                    width: 280,
-                                                    minWidth: 280,
-                                                    animationDelay: `${0.2 + index * 0.08}s`,
-                                                }}
-                                            >
-                                                <ProductCard
-                                                    product={product}
-                                                    variant="block"
-                                                    priority={index < 3}
-                                                    onClick={(p) => setSelectedProduct(p)}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <ScrollableProductRow
+                                        products={blockProducts}
+                                        isVisible={isVisible}
+                                        onProductClick={(p) => setSelectedProduct(p)}
+                                    />
                                 )}
                             </div>
                         );
