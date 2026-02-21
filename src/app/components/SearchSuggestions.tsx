@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import type { Product } from "@/types";
 import { theme } from "@/lib/theme";
 import { useRouter } from "next/navigation";
+import { sortProductsByNumber } from "@/lib/productSort";
 
 interface SearchSuggestionsProps {
     searchQuery: string;
@@ -24,13 +25,13 @@ export default function SearchSuggestions({ searchQuery, allProducts, isVisible,
         }
 
         const query = searchQuery.toLowerCase().trim();
-        const filtered = allProducts
-            .filter((product) => {
+        const filtered = sortProductsByNumber(
+            allProducts.filter((product) => {
                 const titleMatch = product.title.toLowerCase().includes(query);
                 const descriptionMatch = product.description?.toLowerCase().includes(query) || false;
                 return titleMatch || descriptionMatch;
             })
-            .slice(0, 5); // Chỉ hiển thị 5 sản phẩm đầu tiên
+        ).slice(0, 5); // Chỉ hiển thị 5 sản phẩm đầu tiên (đã sắp xếp theo số)
 
         setFilteredProducts(filtered);
     }, [searchQuery, allProducts, isVisible]);

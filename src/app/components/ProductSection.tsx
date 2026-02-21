@@ -6,6 +6,7 @@ import { SUB_CATEGORIES_BY_OCCASION } from "@/types";
 import ProductCard from "./ProductCard";
 import ProductDetailModal from "./ProductDetailModal";
 import { theme } from "@/lib/theme";
+import { sortProductsByNumber, extractNumberFromTitle } from "@/lib/productSort";
 
 interface ProductSectionProps {
     occasion: Occasion;
@@ -35,6 +36,9 @@ function ScrollableProductRow({ products, isVisible, onProductClick }: Scrollabl
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftButton, setShowLeftButton] = useState(false);
     const [showRightButton, setShowRightButton] = useState(false);
+    
+    // Sắp xếp products theo số trong tên (tăng dần 1-2-3-4)
+    const sortedProducts = sortProductsByNumber(products);
 
     const checkScrollButtons = () => {
         if (!scrollContainerRef.current) return;
@@ -76,7 +80,7 @@ function ScrollableProductRow({ products, isVisible, onProductClick }: Scrollabl
             window.removeEventListener("resize", handleResize);
             clearTimeout(timeoutId);
         };
-    }, [products]);
+    }, [sortedProducts]);
 
     const scroll = (direction: "left" | "right") => {
         if (!scrollContainerRef.current) return;
@@ -150,7 +154,7 @@ function ScrollableProductRow({ products, isVisible, onProductClick }: Scrollabl
                     paddingBottom: theme.spacing.md,
                 }}
             >
-                {products.map((product, index) => (
+                {sortedProducts.map((product, index) => (
                     <div
                         key={product._id}
                         className={isVisible ? "card-animate" : ""}
@@ -299,7 +303,10 @@ export default function ProductSection({ occasion, products, label }: ProductSec
 
                     {/* Dưới Danh mục Tết: lần lượt Mã Đáo (sản phẩm Mã Đáo) → Kim Lộc (sản phẩm Kim Lộc) → Khởi Vận → An Khang. Tương tự cho Valentine và 8/3. */}
                     {subCategories.map((sub, blockIndex) => {
-                        const blockProducts = products.filter((p) => (p.subCategory || "") === sub.value);
+                        // Filter và sắp xếp products theo số trong tên (tăng dần 1-2-3-4)
+                        const blockProducts = sortProductsByNumber(
+                            products.filter((p) => (p.subCategory || "") === sub.value)
+                        );
 
                         return (
                             <div
