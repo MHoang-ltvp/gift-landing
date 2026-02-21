@@ -6,6 +6,7 @@ import ProductForm from "@/app/components/ProductForm";
 import ProductEditModal from "./ProductEditModal";
 import { useToast } from "@/app/components/ToastContext";
 import type { Product, Occasion } from "@/types";
+import { SUB_CATEGORIES_BY_OCCASION } from "@/types";
 
 interface ProductsTableClientProps {
     initialProducts: Product[];
@@ -31,12 +32,15 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
     const [showModal, setShowModal] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [filter, setFilter] = useState<"all" | Occasion>("all");
+    const [subCategoryFilter, setSubCategoryFilter] = useState<string | "all">("all");
     const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"price" | "createdAt">("createdAt");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
     const [deletingAll, setDeletingAll] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     // Refresh products after form submission
     useEffect(() => {
@@ -61,6 +65,9 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
     const filteredProducts = products.filter((product) => {
         // Filter by occasion
         if (filter !== "all" && product.occasion !== filter) return false;
+
+        // Filter by subCategory (bộ sưu tập)
+        if (filter !== "all" && subCategoryFilter !== "all" && product.subCategory !== subCategoryFilter) return false;
 
         // Filter by status
         if (statusFilter === "active" && !product.active) return false;
@@ -90,6 +97,22 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
             return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
         }
     });
+
+    // Pagination calculations
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedProducts = sortedProducts.slice(startIndex, endIndex);
+
+    // Reset subCategory filter when occasion filter changes
+    useEffect(() => {
+        setSubCategoryFilter("all");
+    }, [filter]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filter, subCategoryFilter, statusFilter, searchQuery]);
 
     const handleDeleteAll = async () => {
         setDeletingAll(true);
@@ -425,6 +448,52 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
                     </button>
                 </div>
 
+                {/* SubCategory Tabs (Bộ sưu tập) - chỉ hiển thị khi đã chọn một occasion */}
+                {filter !== "all" && SUB_CATEGORIES_BY_OCCASION[filter] && (
+                    <div style={{ display: "flex", gap: "8px", marginBottom: "20px", flexWrap: "wrap", paddingTop: "12px", borderTop: `1px solid ${BORDER_COLOR}` }}>
+                        <button
+                            onClick={() => setSubCategoryFilter("all")}
+                            style={{
+                                padding: "6px 14px",
+                                borderRadius: "6px",
+                                border: "none",
+                                backgroundColor: subCategoryFilter === "all" ? "#E9D5FF" : "#F3F4F6",
+                                color: subCategoryFilter === "all" ? PRIMARY_COLOR : TEXT_SECONDARY,
+                                fontSize: "13px",
+                                fontWeight: subCategoryFilter === "all" ? 500 : 400,
+                                cursor: "pointer",
+                                transition: "all 0.2s",
+                            }}
+                        >
+                            Tất cả
+                        </button>
+                        {SUB_CATEGORIES_BY_OCCASION[filter].map((subCat) => {
+                            const count = products.filter(
+                                (p) => p.occasion === filter && p.subCategory === subCat.value
+                            ).length;
+                            return (
+                                <button
+                                    key={subCat.value}
+                                    onClick={() => setSubCategoryFilter(subCat.value)}
+                                    style={{
+                                        padding: "6px 14px",
+                                        borderRadius: "6px",
+                                        border: "none",
+                                        backgroundColor: subCategoryFilter === subCat.value ? "#E9D5FF" : "#F3F4F6",
+                                        color: subCategoryFilter === subCat.value ? PRIMARY_COLOR : TEXT_SECONDARY,
+                                        fontSize: "13px",
+                                        fontWeight: subCategoryFilter === subCat.value ? 500 : 400,
+                                        cursor: "pointer",
+                                        transition: "all 0.2s",
+                                    }}
+                                >
+                                    {subCat.label} {count > 0 && `(${count})`}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+
                 {/* Search and Filters */}
                 <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                     <div style={{ flex: 1, minWidth: "200px", position: "relative" }}>
@@ -578,14 +647,14 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedProducts.length === 0 ? (
+                            {paginatedProducts.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} style={{ textAlign: "center", padding: "40px", color: TEXT_SECONDARY }}>
                                         Không có sản phẩm nào
                                     </td>
                                 </tr>
                             ) : (
-                                sortedProducts.map((product) => (
+                                paginatedProducts.map((product) => (
                                     <tr
                                         key={product._id}
                                         style={{
@@ -731,6 +800,208 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
                     </table>
                 </div>
             </div>
+
+            {/* Pagination Controls */}
+            {sortedProducts.length > 0 && (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginTop: "24px",
+                        padding: "16px 24px",
+                        backgroundColor: "#ffffff",
+                        borderRadius: "12px",
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                        flexWrap: "wrap",
+                        gap: "16px",
+                    }}
+                >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <span style={{ fontSize: "14px", color: TEXT_SECONDARY }}>
+                            Hiển thị {startIndex + 1}-{Math.min(endIndex, sortedProducts.length)} trong tổng số {sortedProducts.length} sản phẩm
+                        </span>
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(Number(e.target.value));
+                                setCurrentPage(1);
+                            }}
+                            style={{
+                                padding: "8px 12px",
+                                border: `1px solid ${BORDER_COLOR}`,
+                                borderRadius: "8px",
+                                fontSize: "14px",
+                                outline: "none",
+                                cursor: "pointer",
+                                backgroundColor: "#ffffff",
+                            }}
+                        >
+                            <option value={5}>5 / trang</option>
+                            <option value={10}>10 / trang</option>
+                            <option value={20}>20 / trang</option>
+                            <option value={50}>50 / trang</option>
+                        </select>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <button
+                            onClick={() => setCurrentPage(1)}
+                            disabled={currentPage === 1}
+                            style={{
+                                padding: "8px 12px",
+                                border: `1px solid ${BORDER_COLOR}`,
+                                borderRadius: "8px",
+                                backgroundColor: currentPage === 1 ? "#F3F4F6" : "#ffffff",
+                                color: currentPage === 1 ? TEXT_TERTIARY : TEXT_PRIMARY,
+                                fontSize: "14px",
+                                fontWeight: 500,
+                                cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                                transition: "all 0.2s",
+                            }}
+                            onMouseEnter={(e) => {
+                                if (currentPage !== 1) {
+                                    e.currentTarget.style.backgroundColor = "#F9FAFB";
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (currentPage !== 1) {
+                                    e.currentTarget.style.backgroundColor = "#ffffff";
+                                }
+                            }}
+                        >
+                            «
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                            style={{
+                                padding: "8px 12px",
+                                border: `1px solid ${BORDER_COLOR}`,
+                                borderRadius: "8px",
+                                backgroundColor: currentPage === 1 ? "#F3F4F6" : "#ffffff",
+                                color: currentPage === 1 ? TEXT_TERTIARY : TEXT_PRIMARY,
+                                fontSize: "14px",
+                                fontWeight: 500,
+                                cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                                transition: "all 0.2s",
+                            }}
+                            onMouseEnter={(e) => {
+                                if (currentPage !== 1) {
+                                    e.currentTarget.style.backgroundColor = "#F9FAFB";
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (currentPage !== 1) {
+                                    e.currentTarget.style.backgroundColor = "#ffffff";
+                                }
+                            }}
+                        >
+                            ‹
+                        </button>
+
+                        {/* Page Numbers */}
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum: number;
+                            if (totalPages <= 5) {
+                                pageNum = i + 1;
+                            } else if (currentPage <= 3) {
+                                pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                                pageNum = totalPages - 4 + i;
+                            } else {
+                                pageNum = currentPage - 2 + i;
+                            }
+
+                            return (
+                                <button
+                                    key={pageNum}
+                                    onClick={() => setCurrentPage(pageNum)}
+                                    style={{
+                                        padding: "8px 12px",
+                                        border: `1px solid ${currentPage === pageNum ? PRIMARY_COLOR : BORDER_COLOR}`,
+                                        borderRadius: "8px",
+                                        backgroundColor: currentPage === pageNum ? PRIMARY_COLOR : "#ffffff",
+                                        color: currentPage === pageNum ? "#ffffff" : TEXT_PRIMARY,
+                                        fontSize: "14px",
+                                        fontWeight: currentPage === pageNum ? 600 : 500,
+                                        cursor: "pointer",
+                                        transition: "all 0.2s",
+                                        minWidth: "40px",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (currentPage !== pageNum) {
+                                            e.currentTarget.style.backgroundColor = "#F9FAFB";
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (currentPage !== pageNum) {
+                                            e.currentTarget.style.backgroundColor = "#ffffff";
+                                        }
+                                    }}
+                                >
+                                    {pageNum}
+                                </button>
+                            );
+                        })}
+
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{
+                                padding: "8px 12px",
+                                border: `1px solid ${BORDER_COLOR}`,
+                                borderRadius: "8px",
+                                backgroundColor: currentPage === totalPages ? "#F3F4F6" : "#ffffff",
+                                color: currentPage === totalPages ? TEXT_TERTIARY : TEXT_PRIMARY,
+                                fontSize: "14px",
+                                fontWeight: 500,
+                                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                                transition: "all 0.2s",
+                            }}
+                            onMouseEnter={(e) => {
+                                if (currentPage !== totalPages) {
+                                    e.currentTarget.style.backgroundColor = "#F9FAFB";
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (currentPage !== totalPages) {
+                                    e.currentTarget.style.backgroundColor = "#ffffff";
+                                }
+                            }}
+                        >
+                            ›
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage(totalPages)}
+                            disabled={currentPage === totalPages}
+                            style={{
+                                padding: "8px 12px",
+                                border: `1px solid ${BORDER_COLOR}`,
+                                borderRadius: "8px",
+                                backgroundColor: currentPage === totalPages ? "#F3F4F6" : "#ffffff",
+                                color: currentPage === totalPages ? TEXT_TERTIARY : TEXT_PRIMARY,
+                                fontSize: "14px",
+                                fontWeight: 500,
+                                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                                transition: "all 0.2s",
+                            }}
+                            onMouseEnter={(e) => {
+                                if (currentPage !== totalPages) {
+                                    e.currentTarget.style.backgroundColor = "#F9FAFB";
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (currentPage !== totalPages) {
+                                    e.currentTarget.style.backgroundColor = "#ffffff";
+                                }
+                            }}
+                        >
+                            »
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Modal for Add Product */}
             {showModal && (
