@@ -268,9 +268,10 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                                 fontSize: 14,
                             }}
                         >
+                            <option value="8-3">8/3</option>
                             <option value="tet">Tết</option>
                             <option value="valentine">Valentine</option>
-                            <option value="8-3">8/3</option>
+                            <option value="qua-khac">Quà Khác</option>
                         </select>
                     </div>
                     <div>
@@ -296,7 +297,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
                             ))}
                         </select>
                         <p style={{ marginTop: 4, fontSize: 12, color: "#666" }}>
-                            Chọn Tag (Dịp) xong mới chọn BST. BST là Mã Đáo, Kim Lộc, Khởi Vận, An Khang (Tết); Thấu Hiểu, Tâm Tình, Trọn Vẹn (Valentine); Vĩnh Sắc, Xuân Sắc, Mộc Sắc (8/3).
+                            Chọn Tag (Dịp) xong mới chọn BST. BST là Mã Đáo, Kim Lộc, Khởi Vận, An Khang (Tết); Thấu Hiểu, Tâm Tình, Trọn Vẹn (Valentine); Vĩnh Sắc, Xuân Sắc, Mộc Sắc (8/3); Quà Sinh Nhật, Quà Biếu (Quà Khác).
                         </p>
                     </div>
                 </div>

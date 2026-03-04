@@ -189,9 +189,10 @@ export default function Header({ allProducts = [] }: HeaderProps) {
                         }}
                     >
                         {[
+                            { id: "8-3", label: "Quốc tế phụ nữ" },
                             { id: "tet", label: "Tết" },
                             { id: "valentine", label: "Valentine" },
-                            { id: "8-3", label: "Quốc tế phụ nữ" },
+                            { id: "qua-khac", label: "Quà Khác" },
                         ].map((item) => (
                             <button
                                 key={item.id}

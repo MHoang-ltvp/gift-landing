@@ -1,10 +1,11 @@
-export type Occasion = "tet" | "valentine" | "8-3";
+export type Occasion = "tet" | "valentine" | "8-3" | "qua-khac";
 export type CardOccasion = "newyear" | "valentine" | "womensday";
 
 /** Sub-category slug theo từng occasion (dùng cho toggle danh mục) */
 export type TetSubCategory = "ma_dao" | "kim_loc" | "khoi_van" | "an_khang";
 export type ValentineSubCategory = "thau_hieu" | "tam_tinh" | "tron_ven";
 export type WomenDaySubCategory = "vinh_sac" | "xuan_sac" | "moc_sac";
+export type QuaKhacSubCategory = "qua-sinh-nhat" | "qua-bieu";
 
 /** Danh sách sub-category theo occasion: dưới mỗi danh mục (Tết, Valentine, 8/3) là các nhóm cố định, mỗi nhóm chứa sản phẩm có subCategory tương ứng */
 export const SUB_CATEGORIES_BY_OCCASION: Record<Occasion, { value: string; label: string }[]> = {
@@ -24,6 +25,10 @@ export const SUB_CATEGORIES_BY_OCCASION: Record<Occasion, { value: string; label
         { value: "xuan_sac", label: "Xuân Sắc" },
         { value: "moc_sac", label: "Mộc Sắc" },
     ],
+    "qua-khac": [
+        { value: "qua-sinh-nhat", label: "Quà Sinh Nhật" },
+        { value: "qua-bieu", label: "Quà Biếu" },
+    ],
 };
 
 export type Product = {
@@ -34,7 +39,7 @@ export type Product = {
     image?: string;
     images?: string[];
     occasion: Occasion;
-    /** Slug sub-category: tet (ma_dao, kim_loc, khoi_van, an_khang), valentine (thau_hieu, tam_tinh, tron_ven), 8-3 (vinh_sac, xuan_sac, moc_sac) */
+    /** Slug sub-category: tet (ma_dao, kim_loc, khoi_van, an_khang), valentine (thau_hieu, tam_tinh, tron_ven), 8-3 (vinh_sac, xuan_sac, moc_sac), qua-khac (qua-sinh-nhat, qua-bieu) */
     subCategory?: string;
     active: boolean;
     createdAt: string;

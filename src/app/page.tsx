@@ -48,10 +48,11 @@ export default async function Home() {
     // #region agent log
     fetch('http://127.0.0.1:7242/ingest/29049bb3-04ca-43bb-9d39-b9306caca048',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page.tsx:Home:entry',message:'Home page rendering',data:{timestamp:Date.now()},timestamp:Date.now()})}).catch(()=>{});
     // #endregion
-    const [tetProducts, valentineProducts, products83] = await Promise.all([
+    const [products83, tetProducts, valentineProducts, quaKhacProducts] = await Promise.all([
+        getProducts("8-3"),
         getProducts("tet"),
         getProducts("valentine"),
-        getProducts("8-3"),
+        getProducts("qua-khac"),
     ]);
 
     // Get all products for search
@@ -65,6 +66,7 @@ export default async function Home() {
         tet: "Danh mục Tết",
         valentine: "Danh mục Valentine",
         "8-3": "Quốc tế phụ nữ",
+        "qua-khac": "Quà Khác",
     };
 
     return (
@@ -73,6 +75,11 @@ export default async function Home() {
             <HeroBanner />
             
             {/* Product Sections */}
+            <ProductSection
+                occasion="8-3"
+                products={products83}
+                label={occasionLabels["8-3"]}
+            />
             <ProductSection
                 occasion="tet"
                 products={tetProducts}
@@ -84,9 +91,9 @@ export default async function Home() {
                 label={occasionLabels.valentine}
             />
             <ProductSection
-                occasion="8-3"
-                products={products83}
-                label={occasionLabels["8-3"]}
+                occasion="qua-khac"
+                products={quaKhacProducts}
+                label={occasionLabels["qua-khac"]}
             />
 
             {/* Lead Form */}

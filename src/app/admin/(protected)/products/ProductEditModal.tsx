@@ -290,7 +290,7 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
                                 </label>
                                 <select
                                     value={occasion}
-                                    onChange={(e) => setOccasion(e.target.value as "tet" | "valentine" | "8-3")}
+                                    onChange={(e) => setOccasion(e.target.value as Occasion)}
                                     required
                                     style={{
                                         width: "100%",
@@ -300,9 +300,10 @@ export default function ProductEditModal({ product, onClose, onSuccess }: Produc
                                         fontSize: 14,
                                     }}
                                 >
+                                    <option value="8-3">8/3</option>
                                     <option value="tet">Tết</option>
                                     <option value="valentine">Valentine</option>
-                                    <option value="8-3">8/3</option>
+                                    <option value="qua-khac">Quà Khác</option>
                                 </select>
                             </div>
                         </div>

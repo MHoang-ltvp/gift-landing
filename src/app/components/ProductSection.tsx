@@ -24,6 +24,9 @@ const occasionConfig: Record<Occasion, { tagline: string }> = {
     "8-3": {
         tagline: "Tri ân phái đẹp với những bộ quà tinh tế",
     },
+    "qua-khac": {
+        tagline: "Quà tặng phù hợp cho mọi dịp đặc biệt",
+    },
 };
 
 interface ScrollableProductRowProps {

@@ -23,6 +23,7 @@ const occasionLabels: Record<Occasion, string> = {
     tet: "Tết",
     valentine: "Valentine",
     "8-3": "8/3",
+    "qua-khac": "Quà Khác",
 };
 
 export default function ProductsTableClient({ initialProducts }: ProductsTableClientProps) {
@@ -224,6 +225,7 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
     const tetCount = products.filter((p) => p.occasion === "tet").length;
     const valentineCount = products.filter((p) => p.occasion === "valentine").length;
     const eightThreeCount = products.filter((p) => p.occasion === "8-3").length;
+    const quaKhacCount = products.filter((p) => p.occasion === "qua-khac").length;
 
     return (
         <>
@@ -399,6 +401,22 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
                         All {allCount}
                     </button>
                     <button
+                        onClick={() => setFilter("8-3")}
+                        style={{
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            border: "none",
+                            backgroundColor: filter === "8-3" ? PRIMARY_COLOR : "transparent",
+                            color: filter === "8-3" ? "#ffffff" : TEXT_SECONDARY,
+                            fontSize: "14px",
+                            fontWeight: filter === "8-3" ? 500 : 400,
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                        }}
+                    >
+                        8/3 {eightThreeCount}
+                    </button>
+                    <button
                         onClick={() => setFilter("tet")}
                         style={{
                             padding: "8px 16px",
@@ -431,20 +449,20 @@ export default function ProductsTableClient({ initialProducts }: ProductsTableCl
                         Valentine {valentineCount}
                     </button>
                     <button
-                        onClick={() => setFilter("8-3")}
+                        onClick={() => setFilter("qua-khac")}
                         style={{
                             padding: "8px 16px",
                             borderRadius: "8px",
                             border: "none",
-                            backgroundColor: filter === "8-3" ? PRIMARY_COLOR : "transparent",
-                            color: filter === "8-3" ? "#ffffff" : TEXT_SECONDARY,
+                            backgroundColor: filter === "qua-khac" ? PRIMARY_COLOR : "transparent",
+                            color: filter === "qua-khac" ? "#ffffff" : TEXT_SECONDARY,
                             fontSize: "14px",
-                            fontWeight: filter === "8-3" ? 500 : 400,
+                            fontWeight: filter === "qua-khac" ? 500 : 400,
                             cursor: "pointer",
                             transition: "all 0.2s",
                         }}
                     >
-                        8/3 {eightThreeCount}
+                        Quà Khác {quaKhacCount}
                     </button>
                 </div>
 

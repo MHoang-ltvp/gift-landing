@@ -294,9 +294,10 @@ export default function LeadForm() {
                                 }}
                             >
                                 <option value="">Chọn dịp quan tâm (tùy chọn)</option>
+                                <option value="8-3">8/3</option>
                                 <option value="tet">Tết</option>
                                 <option value="valentine">Valentine</option>
-                                <option value="8-3">8/3</option>
+                                <option value="qua-khac">Quà Khác</option>
                             </select>
                         </div>
 

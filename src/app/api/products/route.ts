@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     const db = await getDb();
     const query: any = { active: true };
     
-    if (occasion && ["tet", "valentine", "8-3"].includes(occasion)) {
+    if (occasion && ["tet", "valentine", "8-3", "qua-khac"].includes(occasion)) {
         query.occasion = occasion;
     }
 
