@@ -14,6 +14,7 @@ const occasionLabels: Record<Occasion, string> = {
     tet: "Tết",
     valentine: "Valentine",
     "8-3": "8/3",
+    "qua-khac": "Quà Khác",
 };
 
 export default function ProductDetailModal({ product, onClose }: ProductDetailModalProps) {
